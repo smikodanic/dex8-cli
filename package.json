@@ -2,7 +2,7 @@
   "name": "mikros-cli",
   "version": "1.0.0",
   "title": "Mikros CLI",
-  "description": "Mikros CLI is a command line interface which helps developers to create and run Mikros Tasks (automated serverless scripts).",
+  "description": "Mikros CLI is a command line interface which helps developers to create and run Mikros.io tasks (automated serverless scripts).",
   "keywords": [
     "mikros",
     "cli",
