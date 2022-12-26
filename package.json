@@ -1,0 +1,46 @@
+{
+  "name": "mikros-cli",
+  "version": "1.0.0",
+  "title": "Mikros CLI",
+  "description": "Mikros CLI is a command line interface which helps developers to create and run Mikros Tasks (automated serverless scripts).",
+  "keywords": [
+    "mikros",
+    "cli",
+    "crawler",
+    "scraper",
+    "robot",
+    "spider",
+    "data extraction",
+    "serverless",
+    "automation",
+    "scripts"
+  ],
+  "homepage": "https://www.mikros.io",
+  "author": "Saša Mikodanić <smikodanic@gmail.com>",
+  "license": "AGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:smikodanic/mikros-cli.git"
+  },
+  "directories": {
+    "bin": "./bin"
+  },
+  "main": "",
+  "scripts": {
+    "inst": "rm -rf node_modules && npm install"
+  },
+  "bin": {
+    "mik": "./bin/index.js"
+  },
+  "engines": {
+    "node": ">=12.16.1"
+  },
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "commander": "^6.0.0",
+    "inquirer": "^7.3.3",
+    "moment": "^2.29.4",
+    "fs-extra": "^10.1.0",
+    "httpclient-nodejs": "^1.0.2"
+  }
+}
