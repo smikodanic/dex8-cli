@@ -1,14 +1,11 @@
 /**
- * Start mikros task from command line.
- * $ mik start -i input.json
+ * Start dex8 task from command line.
+ * $ dex8 start -i input.json
  */
 const path = require('path');
 const fse = require('fs-extra');
 const chalk = require('chalk');
 const moment = require('moment');
-const { EventEmitter } = require('events');
-const runtimeCommands = require('./runtimeCommands');
-
 
 
 /**
@@ -39,12 +36,7 @@ module.exports = async (optionsObj) => {
   console.log(`Task "${task_title}" started on ${shortNow()}\n`);
 
 
-  /**** 4) event emitter ****/
-  const eventEmitter = new EventEmitter();
-  eventEmitter.setMaxListeners(5); // 10 by default
-
-
-  /**** 5) GET main & input ****/
+  /**** 4) GET main & input ****/
   const mainPath = path.join(process.cwd(), 'main.js');
   const mainExists = await fse.pathExists(mainPath);
   if (!mainExists) { console.log(chalk.red(`Task "${task_title}" does not have "main.js" file.`)); return; }
@@ -61,14 +53,10 @@ module.exports = async (optionsObj) => {
   }
 
 
-  /**** 6) LISTEN for runtime commands: s,p,r,x, i, ... ****/
-  runtimeCommands.listen();
 
-
-  /**** 7) EXECUTE main ****/
+  /**** 5) EXECUTE main ****/
   try {
-    const output = await main(input, eventEmitter);
-    // eventEmitter.emit('ff-stop');
+    const output = await main(input);
     console.log(`\nTask "${task_title}" is ended on ${shortNow()}`);
     console.log('output:: ', output);
   } catch (err) {

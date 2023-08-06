@@ -1,14 +1,11 @@
 {
-  "name": "mikros-task",
+  "name": "dex8-task",
   "version": "1.0.0",
-  "description": "Mikros task is NodeJS script executed on the Mikros.io Serverless platform.",
+  "description": "Dex8 task is NodeJS script executed on the dex8.com Serverless platform.",
   "main": "main.js",
   "scripts": {
     "inst": "rm -rf node_modules && npm install"
   },
   "license": "MIT",
-  "dependencies": {
-    "echoer": "^1.0.0",
-    "functionflowx": "^1.0.0"
-  }
+  "dependencies": {}
 }

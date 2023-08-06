@@ -1,6 +1,6 @@
 /**
  * This function will update task details written in manifest.json and howto.html.
- * Altgough same can be done with $mik upload this is much faster because it will not change files.
+ * Altgough same can be done with $dex8 upload this is much faster because it will not change files.
  */
 const fse = require('fs-extra');
 const chalk = require('chalk');
@@ -69,7 +69,7 @@ const uploadOneTask = async () => {
       maxRedirects: 0,
       headers: {
         'authorization': conf.jwtToken,
-        'user-agent': 'MIKROS-CLI',
+        'user-agent': 'DEX8-CLI',
         'accept': '*/*', // 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
         'cache-control': 'no-cache',
         'host': '',

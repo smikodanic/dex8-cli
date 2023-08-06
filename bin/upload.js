@@ -1,8 +1,8 @@
 /**
- * Upload MIKROS task from command line.
- * $ mik upload                    -> if we are in the task folder
- * $ mik upload -t <taskName>      -> if we are above task folder
- * $ mik upload --all              -> if we are above task folder
+ * Upload DEX8 task from command line.
+ * $ dex8 upload                    -> if we are in the task folder
+ * $ dex8 upload -t <taskName>      -> if we are above task folder
+ * $ dex8 upload --all              -> if we are above task folder
  */
 const fse = require('fs-extra');
 const uploadOneTask = require('./uploadOneTask');
