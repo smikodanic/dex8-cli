@@ -45,28 +45,29 @@ $ npm install
 ## Commands
 Initiate, delete, start, upload and download tasks from command line.
 
-#### <span style="color:maroon">$ dex8 init &lt;taskName&gt;</span>
+#### $ dex8 init &lt;taskName&gt;
 Use this command to start a new project (Dex8 Task). It will create a taskName folder with initial files.
 a) After init, move to created directory to continue using dex8 commands: *$ cd taskName*
 b) Open "manifest.json" file and modify title to taskName.
 
-#### <span style="color:maroon">$ dex8 login</span>
+#### $ dex8 login
 Login to Dex8 Web Panel with your username and password. After successfully logging in, a "conf.js" file is created. It contains a JWT Authentication Token and other sensitive data so please include it in .gitignore and NEVER push this file in the git repository.
 
-#### <span style="color:maroon">$ dex8 logout</span>
+#### $ dex8 logout
 Logout from Dex8 Web Panel. It is highly recommended to logout every time development work is finished because it will delete the "conf.js" file.
 
-#### <span style="color:maroon">$ dex8 delete &lt;taskName&gt;</span>
+#### $ dex8 delete &lt;taskName&gt;
 Delete a Dex8 task. This command will delete the whole taskName folder. Curent working directory can be either in taskName or in its upper, parent directory.
 
-#### <span style="color:maroon">$ dex8 start -i input.json</span>
+#### $ dex8 start -i input.json -l library.js
 When a task is created use this command to run a Dex8 task locally. Echo messages will be printed in terminal.
 ```
 Options:
--i --input  <inputFile.js>      select input file (initial data for Dex8 task)
+-i --input  <input.js | input.json>      select input file (initial data for Dex8 task)
+-l --library  <library.js>      select library file (initial libs for Dex8 task)
 ```
 
-#### <span style="color:maroon">$ dex8 upload</span>
+#### $ dex8 upload
 Upload the task on the Dex8 serverless platform.
 ```
 Alias:
@@ -78,14 +79,14 @@ To use options position current working directory to folder above taskName.
 -a --all                       upload all tasks
 ```
 
-#### <span style="color:maroon">$ dex8 update</span>
+#### $ dex8 update
 Update task details without uploading the task files.
 This command will read what is written in "manifest.json" and "howto.html" and update the task.
 Althgough same can be done with "$dex8 upload" this is much faster because it will not change files.
 The position have to be in the task's folder.
 
 
-#### <span style="color:maroon">$ dex8 download &lt;task_id&gt;</span>
+#### $ dex8 download &lt;task_id&gt;
 Download task files by task_id. Parameter task_id can be found in Web Panel / Tasks table.
 This command will first delete all files in the folder and then create new, downloaded files.
 Login is required before using this command e.g. "conf.js" file must be created.

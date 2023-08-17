@@ -78,7 +78,8 @@ program
  */
 program
   .command('start')
-  .option('-i, --input <inp>', 'Select input file, for example "my_input.js".')
+  .option('-i, --input <inp>', 'Select input file, for example "input_user1.js" or "input_user1.json".')
+  .option('-l, --library <lib>', 'Select library file, for example "input_library.js".')
   .description('Start dex8 task with or without input file.')
   .action(start);
 

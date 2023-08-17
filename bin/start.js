@@ -6,6 +6,7 @@ const path = require('path');
 const fse = require('fs-extra');
 const chalk = require('chalk');
 const moment = require('moment');
+const { EventEmitter } = require('events');
 
 
 /**
@@ -21,6 +22,7 @@ module.exports = async (optionsObj) => {
 
   // option values
   const input_selected = optionsObj.input;
+  const library_selected = optionsObj.library;
 
 
   /**** 1) GET manifest.json ****/
@@ -36,13 +38,15 @@ module.exports = async (optionsObj) => {
   console.log(`Task "${task_title}" started on ${shortNow()}\n`);
 
 
-  /**** 4) GET main & input ****/
+  /**** 4) Fetch main function ****/
   const mainPath = path.join(process.cwd(), 'main.js');
   const mainExists = await fse.pathExists(mainPath);
   if (!mainExists) { console.log(chalk.red(`Task "${task_title}" does not have "main.js" file.`)); return; }
   // delete require.cache[mainPath];
   const main = require(mainPath);
 
+
+  /**** 5) Fetch input ****/
   let input;
   if (!!input_selected) {
     const input_selectedPath = path.join(process.cwd(), input_selected);
@@ -53,10 +57,25 @@ module.exports = async (optionsObj) => {
   }
 
 
+  /**** 6) Fetch input library ****/
+  let library;
+  if (!!library_selected) {
+    const library_selectedPath = path.join(process.cwd(), library_selected);
+    const libraryExists = await fse.pathExists(library_selectedPath);
+    if (!libraryExists) { console.log(chalk.red(`Library file does not exists: ${library_selected}`)); return; }
+    // delete require.cache[library_selectedPath];
+    library = require(library_selectedPath);
+  } else {
+    const eventEmitter = new EventEmitter();
+    eventEmitter.setMaxListeners(5); // 10 by default
+    library = { eventEmitter };
+  }
 
-  /**** 5) EXECUTE main ****/
+
+
+  /**** 7) EXECUTE main ****/
   try {
-    const output = await main(input);
+    const output = await main(input, library);
     console.log(`\nTask "${task_title}" is ended on ${shortNow()}`);
     console.log('output:: ', output);
   } catch (err) {
