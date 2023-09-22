@@ -98,7 +98,7 @@ $ dex8 d
 
 
 ## Documentation
-Documentation is available at [https://www.dex8.com/docs/cli](https://www.dex8.com/docs/cli) .
+Documentation is available at [https://www.dex8.com/docs/lib/dex8-cli](https://www.dex8.com/docs/lib/dex8-cli) .
 
 
 ### Licence

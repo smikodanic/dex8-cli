@@ -57,7 +57,7 @@ module.exports = async (optionsObj) => {
   }
 
 
-  /**** 6) Fetch input library ****/
+  /**** 6) Fetch library ****/
   let library;
   if (!!library_selected) {
     const library_selectedPath = path.join(process.cwd(), library_selected);

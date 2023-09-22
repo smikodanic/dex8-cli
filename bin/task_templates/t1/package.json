@@ -4,7 +4,7 @@
   "description": "Dex8 task is NodeJS script executed on the dex8.com Serverless platform.",
   "main": "main.js",
   "scripts": {
-    "inst": "rm -rf node_modules && npm install"
+    "inst": "rm -rf node_modules && rm package-lock.json && npm install"
   },
   "license": "MIT",
   "dependencies": {}
