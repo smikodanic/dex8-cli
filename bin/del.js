@@ -6,7 +6,7 @@ const inquirer = require('inquirer');
 module.exports = async (taskName) => {
 
   const questions = [
-    { type: 'confirm', name: 'tf', message: 'Are you sure to delete the Dex8 Task?', default: false }
+    { type: 'confirm', name: 'tf', message: 'Are you sure you want to delete the DEX8 Task?', default: false }
   ];
 
   try {

@@ -3,6 +3,7 @@ module.exports = async (x, lib) => {
   const echo = lib.echo;
 
   echo.log('f1::', x, input.username);
-  x++;
+  x.n++;
+
   return x;
 };

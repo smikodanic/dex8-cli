@@ -1,13 +1,20 @@
 const path = require('path');
 const fse = require('fs-extra');
+const inquirer = require('inquirer');
 
 
 module.exports = async (taskTitle) => {
 
+  const questions = [
+    { type: 'list', name: 'template', message: 'Please select a DEX8 Task template', choices: ['basic', 'puppeteer'], default: false }
+  ];
+
   try {
+    const answers = await inquirer.prompt(questions);
+
     // copy task_template folder taskTitle folder
     await fse.ensureDir(taskTitle);
-    const sourceDir = path.join(__dirname, './task_templates/t1');
+    const sourceDir = path.join(__dirname, 'task_templates', answers.template);
     const destDir = path.join(process.cwd(), taskTitle);
     await fse.copy(sourceDir, destDir);
     console.log(`Copied from ${sourceDir} to ${destDir}`);

@@ -1,0 +1,14 @@
+{
+  "name": "dex8-task",
+  "version": "1.0.0",
+  "description": "A DEX8 task is a Node.js script that runs on the dex8.com Serverless platform.",
+  "main": "main.js",
+  "scripts": {
+    "inst": "rm -rf node_modules && rm package-lock.json && npm install"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@mikosoft/echo": "^1.0.1",
+    "@mikosoft/functionflow": "^1.0.1"
+  }
+}
