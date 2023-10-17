@@ -1,6 +1,6 @@
 {
   "name": "dex8-cli",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "title": "DEX8 CLI",
   "description": "Dex8 CLI is a command line interface which helps developers to create and run dex8.com tasks (automated serverless scripts).",
   "keywords": [
