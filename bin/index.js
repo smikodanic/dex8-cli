@@ -14,6 +14,7 @@ const start = require('./start.js');
 const upload = require('./upload.js');
 const update = require('./update.js');
 const download = require('./download.js');
+const bundle = require('./bundle.js');
 
 
 program
@@ -80,6 +81,7 @@ program
   .command('start')
   .option('-i, --input <inp>', 'Select input file, for example "input_user1.js" or "input_user1.json".')
   .option('-l, --library <lib>', 'Select library file, for example "input_library.js".')
+  .option('-b, --bundle', 'Use ./dist/mainBundle.js instead of ./main.js')
   .description('Start dex8 task with or without input file.')
   .action(start);
 
@@ -121,6 +123,17 @@ program
   .alias('d')
   .description('Download dex8 task.')
   .action(download);
+
+
+/**
+ * Bundle main.js and save it in the ./dist/mainBundle.js.
+ * $dex8 bundle
+ */
+program
+  .command('bundle')
+  .alias('b')
+  .description('Bundle dex8 task in the ./dist/mainBundle.js.')
+  .action(bundle);
 
 
 

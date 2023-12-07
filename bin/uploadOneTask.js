@@ -5,7 +5,7 @@
 const fse = require('fs-extra');
 const chalk = require('chalk');
 const path = require('path');
-const { HttpClient } = require('httpclient-nodejs');
+const { HttpClient } = require('@mikosoft/httpclient-node');
 const config = require('../config.js');
 
 
@@ -13,7 +13,7 @@ const config = require('../config.js');
 const uploadOneTask = async (taskName) => {
 
   try {
-    /*** 0) define task folder. */
+    /*** 0) define task folder ***/
     let taskFolder;
     if (!!taskName) {
       taskFolder = path.join(process.cwd(), taskName); // if current working directory (cwd) is above task folder
@@ -24,7 +24,7 @@ const uploadOneTask = async (taskName) => {
 
     // check if taskFolder is folder
     const stat = await fse.lstat(taskFolder);
-    if (stat.isFile()) { throw new Error(`"${taskFolder}" is a file and should be folder.`); }
+    if (stat.isFile()) { throw new Error(`"${taskFolder}" is a file. It should be a folder.`); }
     console.log('task folder: ', taskFolder);
 
     const tf1 = await fse.pathExists(taskFolder);
@@ -51,6 +51,7 @@ const uploadOneTask = async (taskName) => {
     console.log(`username: ${conf.username} (${conf.user_id})`);
     // console.log('conf:: ', conf);
 
+
     /*** 1) get files for upload ***/
     let upfiles = await fse.readdir(taskFolder);
 
@@ -62,8 +63,8 @@ const uploadOneTask = async (taskName) => {
       uf !== 'conf.js' &&
       uf !== 'node_modules' &&
       uf !== 'tmp' &&
-      uf !== 'package-lock.json' &&
-      uf !== 'package.json'
+      uf !== 'dist' &&
+      uf !== 'package-lock.json'
     ));
     // console.log('upfiles:: ', upfiles); // upfiles:: [ 'f1.js', 'howto.html', 'input.js', 'main.js', 'manifest.json' ]
 
@@ -72,6 +73,7 @@ const uploadOneTask = async (taskName) => {
     const manifestPath = path.join(taskFolder, 'manifest.json');
     const manifest = await fse.readJson(manifestPath);
     // console.log(manifest);
+
 
     /*** 3) checks ***/
     // check if files contain 'manifest.json' file
@@ -85,13 +87,18 @@ const uploadOneTask = async (taskName) => {
     // check if folder name is same as manifest.title
     if (taskFolder.indexOf(manifest.title) === -1) { throw new Error(`Folder name is not same as manifest.title "${manifest.title}". Please modify "manifest.json" file or change folder name.`); }
 
+    // check if dist/mainBundle.js exists
+    const mainBundlePath = path.join(taskFolder, './dist/mainBundle.js');
+    if (!fse.pathExistsSync(mainBundlePath)) { throw new Error('No dist/mainBundle.js. Use command $dex8 bundle.'); }
 
     /*** 4) define "body" payload, object which will be sent to API ***/
     const body = manifest;
+
+    /*** 5) read files ***/
     body.files = []; // init body.files array
     for (let i = 0; i < upfiles.length; i++) {
       const fileName = upfiles[i]; // ['fileName']
-      console.log('Reading ', fileName);
+      console.log(' Reading ', fileName);
 
       const filePath = path.join(taskFolder, fileName);
       fse.readFile(filePath, 'utf8')
@@ -117,14 +124,19 @@ const uploadOneTask = async (taskName) => {
     await new Promise(resolve => setTimeout(resolve, 400)); // some additional time delay before API request
 
 
+    /*** 6) read /dist/mainBundle.js ***/
+    console.log(' Reading dist/mainBundle.js');
+    body.mainBundle = await fse.readFile(mainBundlePath, 'utf8');
+
 
     /*** Send POST request to API ***/
     // init httpClient
     const opts = {
       encodeURI: false,
+      encoding: 'utf8',
       timeout: 90000,
       retry: 1,
-      retryDelay: 1300,
+      retryDelay: 2100,
       maxRedirects: 0,
       headers: {
         'authorization': conf.jwtToken,
@@ -135,7 +147,8 @@ const uploadOneTask = async (taskName) => {
         'accept-encoding': 'gzip',
         'connection': 'close', // keep-alive
         'content-type': 'application/json; charset=UTF-8'
-      }
+      },
+      debug: false
     };
     const dhc = new HttpClient(opts);
 
@@ -156,7 +169,7 @@ const uploadOneTask = async (taskName) => {
 
   } catch (err) {
     console.log(chalk.red(err.message));
-    console.log(err);
+    // console.log(err);
     process.exit();
   }
 

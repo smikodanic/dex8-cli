@@ -2,7 +2,7 @@ const inquirer = require('inquirer');
 const path = require('path');
 const fse = require('fs-extra');
 const chalk = require('chalk');
-const { HttpClient } = require('httpclient-nodejs');
+const { HttpClient } = require('@mikosoft/httpclient-node');
 const config = require('../config.js');
 
 
@@ -18,9 +18,10 @@ module.exports = async () => {
     // init httpClient
     const opts = {
       encodeURI: false,
-      timeout: 3000,
+      encoding: 'utf8',
+      timeout: 90000,
       retry: 1,
-      retryDelay: 1300,
+      retryDelay: 2100,
       maxRedirects: 0,
       headers: {
         'authorization': '',
@@ -31,7 +32,8 @@ module.exports = async () => {
         'accept-encoding': 'gzip',
         'connection': 'close', // keep-alive
         'content-type': 'application/json; charset=UTF-8'
-      }
+      },
+      debug: false
     };
     const dhc = new HttpClient(opts);
 
@@ -42,10 +44,7 @@ module.exports = async () => {
     const answer = await dhc.askJSON(url, 'POST', body);
 
     // status
-    if (answer.status !== 200) {
-      console.log(chalk.red(answer.res.content.message));
-      return;
-    }
+    if (answer.status !== 200) { throw new Error(answer.res.content.message); }
 
 
     // create config file
@@ -60,7 +59,8 @@ module.exports = async () => {
 
 
   } catch (err) {
-    throw err;
+    console.log(chalk.red(err.message));
   }
 
+  process.exit();
 };
