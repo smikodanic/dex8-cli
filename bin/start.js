@@ -19,10 +19,10 @@ const shortNow = () => {
 
 
 module.exports = async (optionsObj) => {
-
   // option values
   const input_selected = optionsObj.input;
   const library_selected = optionsObj.library;
+  const isBundled = optionsObj.bundle;
 
 
   /**** 1) GET manifest.json ****/
@@ -39,11 +39,19 @@ module.exports = async (optionsObj) => {
 
 
   /**** 4) Fetch main function ****/
-  const mainPath = path.join(process.cwd(), 'main.js');
-  const mainExists = await fse.pathExists(mainPath);
-  if (!mainExists) { console.log(chalk.red(`Task "${task_title}" does not have "main.js" file.`)); return; }
-  // delete require.cache[mainPath];
-  const main = require(mainPath);
+  let main;
+  if (isBundled) {
+    const mainBundlePath = path.join(process.cwd(), './dist/mainBundle.js');
+    const mainBundleExists = await fse.pathExists(mainBundlePath);
+    if (!mainBundleExists) { console.log(chalk.red(`Task "${task_title}" does not have "dist/mainBundle.js" file. Use command: $dex8 bundle`)); return; }
+    main = require(mainBundlePath);
+  } else {
+    const mainPath = path.join(process.cwd(), 'main.js');
+    const mainExists = await fse.pathExists(mainPath);
+    if (!mainExists) { console.log(chalk.red(`Task "${task_title}" does not have "main.js" file.`)); return; }
+    // delete require.cache[mainPath];
+    main = require(mainPath);
+  }
 
 
   /**** 5) Fetch input ****/
