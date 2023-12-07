@@ -76,7 +76,7 @@ const uploadOneTask = async (taskName) => {
 
 
     /*** 3) checks ***/
-    // check if files contain 'manifest.json' file
+    // check if upfiles contain 'manifest.json' file
     const hasManifest = upfiles.find(fName => fName === 'manifest.json');
     if (!hasManifest) { throw new Error('Uploaded task must contain "manifest.json" file.'); }
 
@@ -104,14 +104,11 @@ const uploadOneTask = async (taskName) => {
       fse.readFile(filePath, 'utf8')
         .then(fileContent => {
           if (!fileContent) { console.log(chalk.yellow(`---File ${fileName} is empty and will not be uploaded. Delete the file.`)); return; } // do not upload empty files
+          if (fileName === 'manifest.json') { return; }
 
           if (fileName === 'howto.html') { // upload howto.html
             body.howto = fileContent;
-          } else if (/.+\.js$/.test(fileName) && fileName !== 'conf.js' && !!fileContent) { // upload js files except conf.js which doesn't have empty content
-            body.files.push({ name: fileName, content: fileContent });
-          } else if (/.+\.csv$/.test(fileName)) { // upload CSV files
-            body.files.push({ name: fileName, content: fileContent });
-          } else if (/.*input.*\.json$/i.test(fileName)) { // upload input JSON files
+          } else if (/.+(\.js|\.json|\.csv)$/.test(fileName)) { // upload js, json, csv files
             body.files.push({ name: fileName, content: fileContent });
           }
 
@@ -121,12 +118,16 @@ const uploadOneTask = async (taskName) => {
       await new Promise(resolve => setTimeout(resolve, 400)); // some time delay to read file and perform operations
     } // \for
 
+
     await new Promise(resolve => setTimeout(resolve, 400)); // some additional time delay before API request
 
 
     /*** 6) read /dist/mainBundle.js ***/
-    console.log(' Reading dist/mainBundle.js');
+    console.log(' Reading  dist/mainBundle.js');
     body.mainBundle = await fse.readFile(mainBundlePath, 'utf8');
+
+
+    console.log(`Uploading ${body.files.length} files`, body.files.map(file => file.name));
 
 
     /*** Send POST request to API ***/
