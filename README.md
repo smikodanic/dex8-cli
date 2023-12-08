@@ -1,15 +1,14 @@
 # DEX8 CLI
-> DEX8 CLI is a command line interface which helps developers to create and execute Dex8 Tasks (automated serverless scripts).
+> DEX8 CLI is a command line interface which helps developers to create and execute DEX8 Tasks (automated serverless scripts).
 
 
 ## Core Api
-The mainApi is used for login, upload task, download task and update the task on the Dex8 Serverless Platform
-Define Main API URL:
+The DEX8 Api is used for login, upload task, download task and update the task on the DEX8 Serverless Platform.
 
+Define DEX8 API Base URI:
 ```bash
-export DEX8_MAINAPI="http://localhost:8001"
+export DEX8API_BASEURI="http://localhost:8001"
 ```
-
 Default is: https://api.dex8.com
 
 
@@ -34,7 +33,7 @@ $ npx dex8 start -i input.json
 ```
 
 
-#### Error Solution
+#### Error Fix
 If you get error: "npm ERR! could not determine executable to run" when *$ npx dex8 ...* command is used do this:
 ```bash
 $ rm -rf .git/hooks
@@ -46,15 +45,14 @@ $ npm install
 Initiate, delete, start, upload and download tasks from command line.
 
 #### $ dex8 init &lt;taskName&gt;
-Use this command to start a new project (Dex8 Task). It will create a taskName folder with initial files.
-a) After init, move to created directory to continue using dex8 commands: *$ cd taskName*
-b) Open "manifest.json" file and modify title to taskName.
+Use this command to start a new project (DEX8 Task). It will create a taskName folder with initial files.
+a) After init, move to created directory to continue using DEX8 commands: *$ cd taskName*
 
 #### $ dex8 login
-Login to Dex8 Web Panel with your username and password. After successfully logging in, a "conf.js" file is created. It contains a JWT Authentication Token and other sensitive data so please include it in .gitignore and NEVER push this file in the git repository.
+Login to Dex8 Web Panel with your username and password. After successfully logging in, a "dex8-auth.json" file is created. It contains a JWT Authentication Token and other sensitive data so please include it in .gitignore and NEVER push this file in the git repository.
 
 #### $ dex8 logout
-Logout from Dex8 Web Panel. It is highly recommended to logout every time development work is finished because it will delete the "conf.js" file.
+Logout from Dex8 Web Panel. It is highly recommended to logout every time development work is finished because it will delete the "dex8-auth.json" file.
 
 #### $ dex8 delete &lt;taskName&gt;
 Delete a Dex8 task. This command will delete the whole taskName folder. Curent working directory can be either in taskName or in its upper, parent directory.
@@ -89,7 +87,7 @@ The position have to be in the task's folder.
 #### $ dex8 download &lt;task_id&gt;
 Download task files by task_id. Parameter task_id can be found in Web Panel / Tasks table.
 This command will first delete all files in the folder and then create new, downloaded files.
-Login is required before using this command e.g. "conf.js" file must be created.
+Login is required before using this command e.g. "dex8-auth.json" file must be created.
 
 ```
 Alias:

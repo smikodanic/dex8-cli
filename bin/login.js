@@ -48,8 +48,8 @@ module.exports = async () => {
 
 
     // create config file
-    const filePath = path.join(process.cwd(), 'conf.js');
-    const fileContent = 'module.exports = ' + JSON.stringify(answer.res.content, null, 2);
+    const filePath = path.join(process.cwd(), '.json');
+    const fileContent = JSON.stringify(answer.res.content, null, 2);
     await fse.ensureFile(filePath);
     await fse.writeFile(filePath, fileContent, { encoding: 'utf8' });
 

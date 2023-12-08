@@ -34,16 +34,16 @@ const uploadOneTask = async (taskName) => {
     if (!tf2) { throw new Error(`Folder "${taskFolder}" does not exists.`); }
 
 
-    // define path to conf.js
+    // define path to dex8-auth
     let confPath;
-    const tf3 = await fse.pathExists(path.join(taskFolder, 'conf.js'));
+    const tf3 = await fse.pathExists(path.join(taskFolder, 'dex8-auth'));
     if (tf3) {
-      confPath = path.join(taskFolder, 'conf.js');
+      confPath = path.join(taskFolder, 'dex8-auth');
     } else {
-      const tf4 = await fse.pathExists(path.join(taskFolder, '../', 'conf.js')); // watch in upper directory
+      const tf4 = await fse.pathExists(path.join(taskFolder, '../', 'dex8-auth')); // watch in upper directory
       if (tf4) {
-        confPath = path.join(taskFolder, '../', 'conf.js');
-      } else { throw new Error(`File "conf.js" is not created. Please login.`); }
+        confPath = path.join(taskFolder, '../', 'dex8-auth');
+      } else { throw new Error(`File "dex8-auth" is not created. Please login.`); }
     }
 
 
@@ -60,7 +60,7 @@ const uploadOneTask = async (taskName) => {
       uf !== '.editorconfig' &&
       uf !== '.eslintrc' &&
       uf !== '.gitignore' &&
-      uf !== 'conf.js' &&
+      uf !== 'dex8-auth' &&
       uf !== 'node_modules' &&
       uf !== 'tmp' &&
       uf !== 'dist' &&

@@ -54,7 +54,7 @@ module.exports = async (optionsObj) => {
   }
 
 
-  /**** 5) Fetch input ****/
+  /**** 5) Fetch input and inputSecret.json  (inputSecret.json is gitignored) ****/
   let input;
   if (!!input_selected) {
     const input_selectedPath = path.join(process.cwd(), input_selected);
@@ -62,6 +62,15 @@ module.exports = async (optionsObj) => {
     if (!inputExists) { console.log(chalk.red(`Input file does not exists: ${input_selected}`)); return; }
     // delete require.cache[input_selectedPath];
     input = require(input_selectedPath);
+    if (typeof input !== 'object') { console.log(chalk.red(`Input is ${typeof input}. It should be an object.`)); return; }
+    if (Array.isArray(input)) { console.log(chalk.red('Input is array and it should be an object.')); return; }
+  }
+
+  if (fse.pathExistsSync('./inputSecret.json')) {
+    const inputSecretPath = path.join(process.cwd(), './inputSecret.json');
+    console.log(inputSecretPath);
+    const inputSecret = require(inputSecretPath);
+    if (input) { input = { ...input, ...inputSecret }; }
   }
 
 

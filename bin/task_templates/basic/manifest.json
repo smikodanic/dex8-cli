@@ -2,5 +2,6 @@
   "title": "basic-task",
   "description": "DEX8 Task with basic libraries Echo and Functionflow.",
   "category": "general",
-  "thumbnail": ""
+  "thumbnail": "",
+  "waitForOutput": false
 }

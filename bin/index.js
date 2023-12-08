@@ -32,32 +32,32 @@ program
 
 
 /**
- * Login with username:password and if successful create "conf.js" config file.
+ * Login with username:password and if successful create "dex8-auth.json" config file.
  * $dex8 login
  */
 program
   .command('login')
-  .description('Login to dex8 platform and create "conf.js".')
+  .description('Login to dex8 platform and create "dex8-auth.json".')
   .action(login);
 
 
 /**
- * Logout e.g. delete "conf.js" file.
- * It is recommended to logout when developer finish with development job because "conf.js" file will be deleted with all sensitive data.
+ * Logout e.g. delete "dex8-auth.json" file.
+ * It is recommended to logout when developer finish with development job because "dex8-auth.json" file will be deleted with all sensitive data.
  * $dex8 login
  */
 program
   .command('logout')
-  .description('Logout e.g. delete "conf.js" file.')
+  .description('Logout e.g. delete "dex8-auth.json" file.')
   .action(logout);
 
 
 /**
  * Initialize new dex8 task by coping folder "task_template".
- * $dex8 init <taskTitle>
+ * $dex8 init
  */
 program
-  .command('init <taskTitle>')
+  .command('init')
   .description('Initialize new task. Creates folder with initial files.')
   .action(init);
 

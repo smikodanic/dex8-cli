@@ -1,4 +1,5 @@
-node_modules
-tmp
-conf.js
-env*
+node_modules/
+dist/
+dex8-auth.json
+inputSecret*
+.env
