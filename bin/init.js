@@ -4,6 +4,7 @@ const inquirer = require('inquirer');
 const chalk = require('chalk');
 
 
+
 module.exports = async () => {
   try {
     const questions = [
@@ -73,5 +74,7 @@ module.exports = async () => {
   } catch (err) {
     console.log(chalk.red(err.message));
   }
+
+  process.exit();
 
 };

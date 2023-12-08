@@ -10,13 +10,13 @@ const config = require('../config.js');
 
 
 
-const uploadOneTask = async (taskName) => {
+const uploadOneTask = async (taskTitle) => {
 
   try {
     /*** 0) define task folder ***/
     let taskFolder;
-    if (!!taskName) {
-      taskFolder = path.join(process.cwd(), taskName); // if current working directory (cwd) is above task folder
+    if (!!taskTitle) {
+      taskFolder = path.join(process.cwd(), taskTitle); // if current working directory (cwd) is above task folder
     } else {
       taskFolder = process.cwd();
     }
@@ -28,22 +28,22 @@ const uploadOneTask = async (taskName) => {
     console.log('task folder: ', taskFolder);
 
     const tf1 = await fse.pathExists(taskFolder);
-    if (!tf1) { taskFolder = path.join(process.cwd(), `../${taskName}`); }
+    if (!tf1) { taskFolder = path.join(process.cwd(), `../${taskTitle}`); }
 
     const tf2 = await fse.pathExists(taskFolder);
     if (!tf2) { throw new Error(`Folder "${taskFolder}" does not exists.`); }
 
 
-    // define path to dex8-auth
+    // define path to dex8-auth.json
     let confPath;
-    const tf3 = await fse.pathExists(path.join(taskFolder, 'dex8-auth'));
+    const tf3 = await fse.pathExists(path.join(taskFolder, 'dex8-auth.json'));
     if (tf3) {
-      confPath = path.join(taskFolder, 'dex8-auth');
+      confPath = path.join(taskFolder, 'dex8-auth.json');
     } else {
-      const tf4 = await fse.pathExists(path.join(taskFolder, '../', 'dex8-auth')); // watch in upper directory
+      const tf4 = await fse.pathExists(path.join(taskFolder, '../', 'dex8-auth.json')); // watch in upper directory
       if (tf4) {
-        confPath = path.join(taskFolder, '../', 'dex8-auth');
-      } else { throw new Error(`File "dex8-auth" is not created. Please login.`); }
+        confPath = path.join(taskFolder, '../', 'dex8-auth'.json);
+      } else { throw new Error(`File "dex8-auth.json" is not created. Please login.`); }
     }
 
 
@@ -57,14 +57,11 @@ const uploadOneTask = async (taskName) => {
 
     // remove files which are not needed for upload process
     upfiles = upfiles.filter(uf => (
-      uf !== '.editorconfig' &&
-      uf !== '.eslintrc' &&
-      uf !== '.gitignore' &&
-      uf !== 'dex8-auth' &&
+      uf !== 'dex8-auth.json' &&
+      uf !== 'package-lock.json' &&
       uf !== 'node_modules' &&
       uf !== 'tmp' &&
-      uf !== 'dist' &&
-      uf !== 'package-lock.json'
+      uf !== 'dist'
     ));
     // console.log('upfiles:: ', upfiles); // upfiles:: [ 'f1.js', 'howto.html', 'input.js', 'main.js', 'manifest.json' ]
 
@@ -165,17 +162,14 @@ const uploadOneTask = async (taskName) => {
     }
 
     await new Promise(resolve => setTimeout(resolve, 1300));
-    process.exit();
 
 
   } catch (err) {
     console.log(chalk.red(err.message));
-    // console.log(err);
-    process.exit();
   }
 
 
-
+  process.exit();
 
 };
 

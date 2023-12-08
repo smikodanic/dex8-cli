@@ -32,8 +32,8 @@ program
 
 
 /**
- * Login with username:password and if successful create "dex8-auth.json" config file.
- * $dex8 login
+ * Login with username:password and if successful create "dex8-auth.json" file.
+ * $ dex8 login
  */
 program
   .command('login')
@@ -44,7 +44,7 @@ program
 /**
  * Logout e.g. delete "dex8-auth.json" file.
  * It is recommended to logout when developer finish with development job because "dex8-auth.json" file will be deleted with all sensitive data.
- * $dex8 login
+ * $ dex8 logout
  */
 program
   .command('logout')
@@ -53,12 +53,12 @@ program
 
 
 /**
- * Initialize new dex8 task by coping folder "task_template".
- * $dex8 init
+ * Initialize new dex8 task by coping folder "task_templates/...".
+ * $ dex8 init
  */
 program
   .command('init')
-  .description('Initialize new task. Creates folder with initial files.')
+  .description('Initialize new task. Create folder with initial files.')
   .action(init);
 
 
@@ -68,9 +68,19 @@ program
  */
 program
   .command('delete <taskTitle>')
-  .alias('rm')
   .description('Delete a task. Be careful with this command !!!')
   .action(del);
+
+
+/**
+ * Bundle main.js and save it in the ./dist/mainBundle.js.
+ * $dex8 bundle
+ */
+program
+  .command('bundle')
+  .alias('b')
+  .description('Bundle dex8 task in the ./dist/mainBundle.js.')
+  .action(bundle);
 
 
 /**
@@ -96,7 +106,7 @@ program
   .command('upload')
   .alias('u')
   .description('Upload dex8 task.')
-  .option('-t, --task <taskTitle>', 'Upload a task defined by name.')
+  .option('-t, --task <taskTitle>', 'Upload a task defined by title.')
   .option('-a, --all', 'Upload all dex8 tasks.')
   .action(upload);
 
@@ -123,17 +133,6 @@ program
   .alias('d')
   .description('Download dex8 task.')
   .action(download);
-
-
-/**
- * Bundle main.js and save it in the ./dist/mainBundle.js.
- * $dex8 bundle
- */
-program
-  .command('bundle')
-  .alias('b')
-  .description('Bundle dex8 task in the ./dist/mainBundle.js.')
-  .action(bundle);
 
 
 

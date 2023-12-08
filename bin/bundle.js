@@ -30,7 +30,7 @@ module.exports = async () => {
         colors: true    // Adds colors to the output
       }));
 
-      console.log('Build is successful!');
+      console.log('Bundling is finished');
     });
 
 

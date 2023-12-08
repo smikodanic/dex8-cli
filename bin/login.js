@@ -6,6 +6,7 @@ const { HttpClient } = require('@mikosoft/httpclient-node');
 const config = require('../config.js');
 
 
+
 module.exports = async () => {
 
   const questions = [
@@ -48,7 +49,7 @@ module.exports = async () => {
 
 
     // create config file
-    const filePath = path.join(process.cwd(), '.json');
+    const filePath = path.join(process.cwd(), 'dex8-auth.json');
     const fileContent = JSON.stringify(answer.res.content, null, 2);
     await fse.ensureFile(filePath);
     await fse.writeFile(filePath, fileContent, { encoding: 'utf8' });

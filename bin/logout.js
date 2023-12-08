@@ -1,16 +1,22 @@
 const fse = require('fs-extra');
+const chalk = require('chalk');
+
+
 
 module.exports = async () => {
-  const filePath = './dex8-auth';
+  const filePath = './dex8-auth.json';
 
   try {
-    await fse.remove(filePath);
 
-    if (fse.pathExists(filePath)) {
-      console.log(`Logout was successful and "dex8-auth" was deleted.`);
+    await fse.remove(filePath);
+    if (!fse.pathExistsSync(filePath)) {
+      console.log(`Logout was successful and "dex8-auth.json" was deleted.`);
     }
+
   } catch (err) {
-    throw err;
+    console.log(chalk.red(err.message));
   }
+
+  process.exit();
 
 };
