@@ -3,5 +3,6 @@
   "description": "DEX8 Task to launch a URL using Puppeteer and a web browser.",
   "category": "general",
   "thumbnail": "",
-  "waitForOutput": false
+  "output_response": false,
+  "environment": "nodejs"
 }

@@ -4,13 +4,13 @@ const chalk = require('chalk');
 
 
 module.exports = async () => {
-  const filePath = './dex8-auth.json';
+  const filePath = './dex8auth.json';
 
   try {
 
     await fse.remove(filePath);
     if (!fse.pathExistsSync(filePath)) {
-      console.log(`Logout was successful and "dex8-auth.json" was deleted.`);
+      console.log(`Logout was successful and "dex8auth.json" was deleted.`);
     }
 
   } catch (err) {

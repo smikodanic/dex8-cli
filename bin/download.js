@@ -15,21 +15,21 @@ module.exports = async (task_id) => {
 
   try {
 
-    /*** 0) remove all files except dex8-auth.json ***/
+    /*** 0) remove all files except dex8auth.json ***/
     const oldFiles = await fse.readdir(taskFolder);
     for (const oldFile of oldFiles) {
       const stat = await fse.lstat(oldFile);
-      if (stat.isFile() && oldFile !== 'dex8-auth.json') {
+      if (stat.isFile() && oldFile !== 'dex8auth.json') {
         await fse.remove(path.join(taskFolder, oldFile));
         console.log(`Deleted ${oldFile}`);
       }
     }
 
 
-    /*** 1) get dex8-auth.json  (which is created after successful login) ***/
-    const authPath = path.join(taskFolder, 'dex8-auth.json');
+    /*** 1) get dex8auth.json  (which is created after successful login) ***/
+    const authPath = path.join(taskFolder, 'dex8auth.json');
     const tf = await fse.pathExists(authPath);
-    if (!tf) { throw new Error(`File "dex8-auth.json" is not created. Please login.`); }
+    if (!tf) { throw new Error(`File "dex8auth.json" is not created. Please login.`); }
     const conf = require(authPath);
 
     /*** 2) send API request to /cli/download/:task_id ***/

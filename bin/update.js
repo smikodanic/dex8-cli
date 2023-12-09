@@ -15,17 +15,17 @@ const uploadOneTask = async () => {
   try {
     const taskFolder = process.cwd();
 
-    /*** 1) define paths to the dex8-auth, manifest.json and howto.html ***/
-    // define path to dex8-auth
+    /*** 1) define paths to the dex8auth, manifest.json and howto.html ***/
+    // define path to dex8auth
     let confPath;
-    const tf3 = await fse.pathExists(path.join(taskFolder, 'dex8-auth'));
+    const tf3 = await fse.pathExists(path.join(taskFolder, 'dex8auth'));
     if (tf3) {
-      confPath = path.join(taskFolder, 'dex8-auth');
+      confPath = path.join(taskFolder, 'dex8auth');
     } else {
-      const tf4 = await fse.pathExists(path.join(taskFolder, '../', 'dex8-auth')); // watch in upper directory
+      const tf4 = await fse.pathExists(path.join(taskFolder, '../', 'dex8auth')); // watch in upper directory
       if (tf4) {
-        confPath = path.join(taskFolder, '../', 'dex8-auth');
-      } else { throw new Error(`File "dex8-auth" is not created. Please login.`); }
+        confPath = path.join(taskFolder, '../', 'dex8auth');
+      } else { throw new Error(`File "dex8auth" is not created. Please login.`); }
     }
     const conf = require(confPath);
     console.log(`username: ${conf.username} (${conf.user_id})`);

@@ -32,23 +32,23 @@ program
 
 
 /**
- * Login with username:password and if successful create "dex8-auth.json" file.
+ * Login with username:password and if successful create "dex8auth.json" file.
  * $ dex8 login
  */
 program
   .command('login')
-  .description('Login to dex8 platform and create "dex8-auth.json".')
+  .description('Login to dex8 platform and create "dex8auth.json".')
   .action(login);
 
 
 /**
- * Logout e.g. delete "dex8-auth.json" file.
- * It is recommended to logout when developer finish with development job because "dex8-auth.json" file will be deleted with all sensitive data.
+ * Logout e.g. delete "dex8auth.json" file.
+ * It is recommended to logout when developer finish with development job because "dex8auth.json" file will be deleted with all sensitive data.
  * $ dex8 logout
  */
 program
   .command('logout')
-  .description('Logout e.g. delete "dex8-auth.json" file.')
+  .description('Logout e.g. delete "dex8auth.json" file.')
   .action(logout);
 
 

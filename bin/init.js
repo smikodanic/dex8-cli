@@ -12,7 +12,8 @@ module.exports = async () => {
       { type: 'input', name: 'taskDescription', message: 'Task description:' },
       { type: 'input', name: 'taskCategory', message: 'Task category:', default: 'general' },
       { type: 'input', name: 'taskThumbnail', message: 'Task thumbnail URL:' },
-      { type: 'confirm', name: 'taskWaitForOutput', message: 'Should client wait for output:', default: false },
+      { type: 'confirm', name: 'taskOutputResponse', message: 'Should client receive the output:', default: false },
+      { type: 'list', name: 'taskEnvironment', message: 'Select task environment:', choices: ['nodejs', 'browser', 'python'], default: 'nodejs' },
       { type: 'list', name: 'template', message: 'Select task template:', choices: ['basic', 'puppeteer'], default: false }
     ];
 
@@ -22,7 +23,8 @@ module.exports = async () => {
     const taskDescription = answers.taskDescription.replace(/\s+/g, ' ').trim();
     const taskCategory = answers.taskCategory.replace(/\s+/g, ' ').trim();
     const taskThumbnail = answers.taskThumbnail.replace(/\s+/g, '').trim();
-    const taskWaitForOutput = answers.taskWaitForOutput;
+    const taskOutputResponse = answers.taskOutputResponse;
+    const taskEnvironment = answers.taskEnvironment;
 
     if (!taskTitle) { throw new Error('The Task title is required.'); }
 
@@ -42,21 +44,22 @@ module.exports = async () => {
     const gitignore_new = path.join(destDir, '.gitignore');
     await fse.rename(gitignore_old, gitignore_new);
 
-    // set package.json name and description
+    // package.json
     const packageJson_path = path.join(destDir, 'package.json');
     const package_obj = require(packageJson_path);
     package_obj.name = taskTitle;
     package_obj.description = taskDescription;
     await fse.writeFile(packageJson_path, JSON.stringify(package_obj, null, 2), { encoding: 'utf8' });
 
-    // set manifest.json name and description
+    // manifest.json
     const manifestJson_path = path.join(destDir, 'manifest.json');
     const manifest_obj = require(manifestJson_path);
     manifest_obj.title = taskTitle;
     manifest_obj.description = taskDescription;
     manifest_obj.category = taskCategory;
     manifest_obj.thumbnail = taskThumbnail;
-    manifest_obj.waitForOutput = taskWaitForOutput;
+    manifest_obj.output_response = taskOutputResponse;
+    manifest_obj.environment = taskEnvironment;
     await fse.writeFile(manifestJson_path, JSON.stringify(manifest_obj, null, 2), { encoding: 'utf8' });
 
     // howto.html

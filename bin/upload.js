@@ -24,7 +24,7 @@ module.exports = async (optionsObj) => {
     /*** 2) uploading tasks one by one ***/
     let i = 1;
     for (const taskTitle of folders) {
-      if (taskTitle !== 'dex8-auth.json' && taskTitle !== '.git' && taskTitle !== '.gitignore') {
+      if (taskTitle !== 'dex8auth.json' && taskTitle !== '.git' && taskTitle !== '.gitignore') {
         console.log(`\n============== ${i}. Uploading task "${taskTitle}" ... ==============`);
         i++;
         await uploadOneTask(taskTitle);

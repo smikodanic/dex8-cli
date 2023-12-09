@@ -34,22 +34,21 @@ const uploadOneTask = async (taskTitle) => {
     if (!tf2) { throw new Error(`Folder "${taskFolder}" does not exists.`); }
 
 
-    // define path to dex8-auth.json
-    let confPath;
-    const tf3 = await fse.pathExists(path.join(taskFolder, 'dex8-auth.json'));
+    // define path to dex8auth.json
+    let dex8auth_path;
+    const tf3 = await fse.pathExists(path.join(taskFolder, 'dex8auth.json'));
     if (tf3) {
-      confPath = path.join(taskFolder, 'dex8-auth.json');
+      dex8auth_path = path.join(taskFolder, 'dex8auth.json');
     } else {
-      const tf4 = await fse.pathExists(path.join(taskFolder, '../', 'dex8-auth.json')); // watch in upper directory
+      const tf4 = await fse.pathExists(path.join(taskFolder, '../', 'dex8auth.json')); // watch in upper directory
       if (tf4) {
-        confPath = path.join(taskFolder, '../', 'dex8-auth'.json);
-      } else { throw new Error(`File "dex8-auth.json" is not created. Please login.`); }
+        dex8auth_path = path.join(taskFolder, '../', 'dex8auth'.json);
+      } else { throw new Error(`File "dex8auth.json" is not created. Please login.`); }
     }
 
 
-    const conf = require(confPath);
-    console.log(`username: ${conf.username} (${conf.user_id})`);
-    // console.log('conf:: ', conf);
+    const dex8auth = require(dex8auth_path);
+    console.log(`username: ${dex8auth.username} (${dex8auth.user_id})`);
 
 
     /*** 1) get files for upload ***/
@@ -57,7 +56,7 @@ const uploadOneTask = async (taskTitle) => {
 
     // remove files which are not needed for upload process
     upfiles = upfiles.filter(uf => (
-      uf !== 'dex8-auth.json' &&
+      uf !== 'dex8auth.json' &&
       uf !== 'package-lock.json' &&
       uf !== 'node_modules' &&
       uf !== 'tmp' &&
@@ -77,12 +76,12 @@ const uploadOneTask = async (taskTitle) => {
     const hasManifest = upfiles.find(fName => fName === 'manifest.json');
     if (!hasManifest) { throw new Error('Uploaded task must contain "manifest.json" file.'); }
 
-    // check if files contain 'main' file
+    // check if files contain 'main.js' file
     const hasMain = upfiles.find(fName => fName === 'main.js');
     if (!hasMain) { throw new Error('Uploaded task must contain "main.js" file.'); }
 
     // check if folder name is same as manifest.title
-    if (taskFolder.indexOf(manifest.title) === -1) { throw new Error(`Folder name is not same as manifest.title "${manifest.title}". Please modify "manifest.json" file or change folder name.`); }
+    if (!taskFolder.includes(manifest.title)) { throw new Error(`Folder name is not same as manifest.title "${manifest.title}". Please modify "manifest.json" file or change folder name.`); }
 
     // check if dist/mainBundle.js exists
     const mainBundlePath = path.join(taskFolder, './dist/mainBundle.js');
@@ -95,20 +94,17 @@ const uploadOneTask = async (taskTitle) => {
     body.files = []; // init body.files array
     for (let i = 0; i < upfiles.length; i++) {
       const fileName = upfiles[i]; // ['fileName']
+      const filePath = path.join(taskFolder, fileName);
+
+      if (fse.lstatSync(filePath).isDirectory()) { continue; } // do not take directories
+
       console.log(' Reading ', fileName);
 
-      const filePath = path.join(taskFolder, fileName);
       fse.readFile(filePath, 'utf8')
         .then(fileContent => {
           if (!fileContent) { console.log(chalk.yellow(`---File ${fileName} is empty and will not be uploaded. Delete the file.`)); return; } // do not upload empty files
           if (fileName === 'manifest.json') { return; }
-
-          if (fileName === 'howto.html') { // upload howto.html
-            body.howto = fileContent;
-          } else if (/.+(\.js|\.json|\.csv)$/.test(fileName)) { // upload js, json, csv files
-            body.files.push({ name: fileName, content: fileContent });
-          }
-
+          body.files.push({ name: fileName, content: fileContent });
         })
         .catch(err => console.log(chalk.red(err.message)));
 
@@ -137,7 +133,7 @@ const uploadOneTask = async (taskTitle) => {
       retryDelay: 2100,
       maxRedirects: 0,
       headers: {
-        'authorization': conf.jwtToken,
+        'authorization': dex8auth.jwtToken,
         'user-agent': 'DEX8-CLI',
         'accept': '*/*', // 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
         'cache-control': 'no-cache',
@@ -150,7 +146,6 @@ const uploadOneTask = async (taskTitle) => {
     };
     const dhc = new HttpClient(opts);
 
-    // send POST /cli/login request
     const url = config.mainapiBaseURL + '/cli/upload';
     const answer = await dhc.askJSON(url, 'POST', body);
 
