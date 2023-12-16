@@ -13,18 +13,26 @@ module.exports = async (optionsObj) => {
   const taskTitle = optionsObj.task; // string | undefined
   const all = optionsObj.all; // boolean | undefined
 
+
   if (!all) {
-    uploadOneTask(taskTitle);
+    await uploadOneTask(taskTitle);
 
   } else {
     /*** 1) get task_names e.g. folder names ***/
-    const folders = await fse.readdir('./');
-    // console.log('folders:: ', folders);
+    const items = await fse.readdir('./', { withFileTypes: true });
+    const folders = items.filter(item => item.isDirectory()).map(folder => folder.name);
 
     /*** 2) uploading tasks one by one ***/
     let i = 1;
     for (const taskTitle of folders) {
-      if (taskTitle !== 'dex8auth.json' && taskTitle !== '.git' && taskTitle !== '.gitignore') {
+      if (
+        taskTitle !== '.git' &&
+        taskTitle !== '.gitignore' &&
+        taskTitle !== 'dex8auth.json' &&
+        taskTitle !== 'package-lock.json' &&
+        taskTitle !== 'node_modules' &&
+        taskTitle !== 'tmp'
+      ) {
         console.log(`\n============== ${i}. Uploading task "${taskTitle}" ... ==============`);
         i++;
         await uploadOneTask(taskTitle);
@@ -33,5 +41,7 @@ module.exports = async (optionsObj) => {
     }
 
   }
+
+  process.exit();
 
 };

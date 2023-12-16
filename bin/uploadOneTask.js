@@ -23,7 +23,7 @@ const uploadOneTask = async (taskTitle) => {
 
 
     // check if taskFolder is folder
-    const stat = await fse.lstat(taskFolder);
+    const stat = await fse.lstat(taskFolder).catch(console.log);
     if (stat.isFile()) { throw new Error(`"${taskFolder}" is a file. It should be a folder.`); }
     console.log('task folder: ', taskFolder);
 
@@ -42,7 +42,7 @@ const uploadOneTask = async (taskTitle) => {
     } else {
       const tf4 = await fse.pathExists(path.join(taskFolder, '../', 'dex8auth.json')); // watch in upper directory
       if (tf4) {
-        dex8auth_path = path.join(taskFolder, '../', 'dex8auth'.json);
+        dex8auth_path = path.join(taskFolder, '../', 'dex8auth.json');
       } else { throw new Error(`File "dex8auth.json" is not created. Please login.`); }
     }
 
@@ -162,9 +162,6 @@ const uploadOneTask = async (taskTitle) => {
   } catch (err) {
     console.log(chalk.red(err.message));
   }
-
-
-  process.exit();
 
 };
 

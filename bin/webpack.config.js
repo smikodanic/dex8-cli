@@ -8,8 +8,8 @@ module.exports = {
 
   output: {
     path: path.resolve(process.cwd(), 'dist'),
-    libraryTarget: 'commonjs2', // enables the use of CommonJS modules i.e. require('./dist/mainBundle.js)
     filename: 'mainBundle.js',
+    libraryTarget: 'commonjs2', // enables the use of CommonJS modules i.e. require('./dist/mainBundle.js)
     globalObject: 'this', // Depending on the environment you may need this
   }
 };
