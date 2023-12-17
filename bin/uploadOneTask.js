@@ -56,6 +56,7 @@ const uploadOneTask = async (taskTitle) => {
 
     // remove files which are not needed for upload process
     upfiles = upfiles.filter(uf => (
+      uf !== 'manifest.json' &&
       uf !== 'dex8auth.json' &&
       uf !== 'package-lock.json' &&
       uf !== 'node_modules' &&
@@ -68,14 +69,10 @@ const uploadOneTask = async (taskTitle) => {
     /*** 2) read manifest ***/
     const manifestPath = path.join(taskFolder, 'manifest.json');
     const manifest = await fse.readJson(manifestPath);
-    // console.log(manifest);
+    if (!manifest) { throw new Error('Uploaded task must contain "manifest.json" file.'); }
 
 
     /*** 3) checks ***/
-    // check if upfiles contain 'manifest.json' file
-    const hasManifest = upfiles.find(fName => fName === 'manifest.json');
-    if (!hasManifest) { throw new Error('Uploaded task must contain "manifest.json" file.'); }
-
     // check if files contain 'main.js' file
     const hasMain = upfiles.find(fName => fName === 'main.js');
     if (!hasMain) { throw new Error('Uploaded task must contain "main.js" file.'); }
@@ -88,31 +85,40 @@ const uploadOneTask = async (taskTitle) => {
     if (!fse.pathExistsSync(mainBundlePath)) { throw new Error('No dist/mainBundle.js. Use command $dex8 bundle.'); }
 
     /*** 4) define "body" payload, object which will be sent to API ***/
-    const body = manifest;
+    const body = {
+      ...manifest, // title,description,category,thumbnail,environment
+      taskFiles: [],
+      inputs: [],
+      inputSecrets: [],
+      mainBundle: ''
+    };
 
     /*** 5) read files ***/
-    body.files = []; // init body.files array
-    for (let i = 0; i < upfiles.length; i++) {
-      const fileName = upfiles[i]; // ['fileName']
-      const filePath = path.join(taskFolder, fileName);
-
+    for (const name of upfiles) {
+      const filePath = path.join(taskFolder, name);
       if (fse.lstatSync(filePath).isDirectory()) { continue; } // do not take directories
 
-      console.log(' Reading ', fileName);
+      if (/^input(?!Secret).*\.json/.test(name)) {
+        console.log(' Reading input file:', name);
+        const val = await fse.readJson(filePath, 'utf8');
+        if (!val) { throw new Error(`Empty val in ${name}`); }
+        body.inputs.push({ name, val });
+      } else if (/^inputSecret.*\.json/.test(name)) {
+        console.log(' Reading secret input file:', name);
+        const val = await fse.readJson(filePath, 'utf8');
+        body.inputSecrets.push({ name, val });
+      } else {
+        console.log(' Reading file:', name);
+        const content = await fse.readFile(filePath, 'utf8');
+        if (!content) { throw new Error(`Empty content in ${name}`); }
+        body.taskFiles.push({ name, content });
+      }
 
-      fse.readFile(filePath, 'utf8')
-        .then(fileContent => {
-          if (!fileContent) { console.log(chalk.yellow(`---File ${fileName} is empty and will not be uploaded. Delete the file.`)); return; } // do not upload empty files
-          if (fileName === 'manifest.json') { return; }
-          body.files.push({ name: fileName, content: fileContent });
-        })
-        .catch(err => console.log(chalk.red(err.message)));
-
-      await new Promise(resolve => setTimeout(resolve, 400)); // some time delay to read file and perform operations
-    } // \for
+      await new Promise(resolve => setTimeout(resolve, 300));
+    }
 
 
-    await new Promise(resolve => setTimeout(resolve, 400)); // some additional time delay before API request
+    await new Promise(resolve => setTimeout(resolve, 500));
 
 
     /*** 6) read /dist/mainBundle.js ***/
@@ -120,7 +126,7 @@ const uploadOneTask = async (taskTitle) => {
     body.mainBundle = await fse.readFile(mainBundlePath, 'utf8');
 
 
-    console.log(`Uploading ${body.files.length} files`, body.files.map(file => file.name));
+    console.log(`Uploading ${body.inputs.length} inputs, ${body.inputSecrets.length} secret inputs, ${body.taskFiles.length} files and main bundle ${body.mainBundle.length} bytes`,);
 
 
     /*** Send POST request to API ***/
