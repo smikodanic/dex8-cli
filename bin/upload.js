@@ -1,41 +1,41 @@
 /**
- * Upload DEX8 task from command line.
- * $ dex8 upload                    -> if we are in the task folder
- * $ dex8 upload -t <taskTitle>      -> if we are above task folder
- * $ dex8 upload --all              -> if we are above task folder
+ * Upload DEX8 skript from command line.
+ * $ dex8 upload                    -> if we are in the skript folder
+ * $ dex8 upload -t <skriptTitle>      -> if we are above skript folder
+ * $ dex8 upload --all              -> if we are above skript folder
  */
 const fse = require('fs-extra');
-const uploadOneTask = require('./uploadOneTask');
+const uploadOneSkript = require('./uploadOneSkript');
 
 
 module.exports = async (optionsObj) => {
   // option values
-  const taskTitle = optionsObj.task; // string | undefined
+  const skriptTitle = optionsObj.skript; // string | undefined
   const all = optionsObj.all; // boolean | undefined
 
 
   if (!all) {
-    await uploadOneTask(taskTitle);
+    await uploadOneSkript(skriptTitle);
 
   } else {
-    /*** 1) get task_names e.g. folder names ***/
+    /*** 1) get skript_names e.g. folder names ***/
     const items = await fse.readdir('./', { withFileTypes: true });
     const folders = items.filter(item => item.isDirectory()).map(folder => folder.name);
 
-    /*** 2) uploading tasks one by one ***/
+    /*** 2) uploading skripts one by one ***/
     let i = 1;
-    for (const taskTitle of folders) {
+    for (const skriptTitle of folders) {
       if (
-        taskTitle !== '.git' &&
-        taskTitle !== '.gitignore' &&
-        taskTitle !== 'dex8auth.json' &&
-        taskTitle !== 'package-lock.json' &&
-        taskTitle !== 'node_modules' &&
-        taskTitle !== 'tmp'
+        skriptTitle !== '.git' &&
+        skriptTitle !== '.gitignore' &&
+        skriptTitle !== 'dex8auth.json' &&
+        skriptTitle !== 'package-lock.json' &&
+        skriptTitle !== 'node_modules' &&
+        skriptTitle !== 'tmp'
       ) {
-        console.log(`\n============== ${i}. Uploading task "${taskTitle}" ... ==============`);
+        console.log(`\n============== ${i}. Uploading skript "${skriptTitle}" ... ==============`);
         i++;
-        await uploadOneTask(taskTitle);
+        await uploadOneSkript(skriptTitle);
       }
 
     }

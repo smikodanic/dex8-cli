@@ -5,7 +5,7 @@ const config = require('./webpack.config.js');
 module.exports = async () => {
 
   try {
-    console.log('Bundling main.js in pogress. Please wait...');
+    console.log('Bundling main.js in progress. Please wait...');
 
     webpack(config, (err, stats) => {
       if (err) {

@@ -1,5 +1,5 @@
 /**
- * This function will update task details written in manifest.json and howto.html.
+ * This function will update skript details written in manifest.json and howto.html.
  * Altgough same can be done with $dex8 upload this is much faster because it will not change files.
  */
 const fse = require('fs-extra');
@@ -10,21 +10,21 @@ const config = require('../config.js');
 
 
 
-const uploadOneTask = async () => {
+const uploadOneSkript = async () => {
 
   try {
-    const taskFolder = process.cwd();
+    const skriptFolder = process.cwd();
 
     /*** 1) define paths to the dex8auth, manifest.json and howto.html ***/
     // define path to dex8auth
     let confPath;
-    const tf3 = await fse.pathExists(path.join(taskFolder, 'dex8auth'));
+    const tf3 = await fse.pathExists(path.join(skriptFolder, 'dex8auth'));
     if (tf3) {
-      confPath = path.join(taskFolder, 'dex8auth');
+      confPath = path.join(skriptFolder, 'dex8auth');
     } else {
-      const tf4 = await fse.pathExists(path.join(taskFolder, '../', 'dex8auth')); // watch in upper directory
+      const tf4 = await fse.pathExists(path.join(skriptFolder, '../', 'dex8auth')); // watch in upper directory
       if (tf4) {
-        confPath = path.join(taskFolder, '../', 'dex8auth');
+        confPath = path.join(skriptFolder, '../', 'dex8auth');
       } else { throw new Error(`File "dex8auth" is not created. Please login.`); }
     }
     const conf = require(confPath);
@@ -32,14 +32,14 @@ const uploadOneTask = async () => {
     // console.log('conf:: ', conf);
 
 
-    const manifestPath = path.join(taskFolder, 'manifest.json');
+    const manifestPath = path.join(skriptFolder, 'manifest.json');
     if (!fse.pathExists(manifestPath)) {
       throw new Error(`File "manifest.json" does not exist.`);
     }
     const manifest = await fse.readJson(manifestPath);
 
 
-    const howtoPath = path.join(taskFolder, 'howto.html');
+    const howtoPath = path.join(skriptFolder, 'howto.html');
     if (!fse.pathExists(howtoPath)) {
       throw new Error(`File "howto.html" does not exist.`);
     }
@@ -49,7 +49,7 @@ const uploadOneTask = async () => {
 
     /*** 2) checks ***/
     // check if folder name is same as manifest.title
-    if (taskFolder.indexOf(manifest.title) === -1) { throw new Error(`Folder name is not same as manifest.title "${manifest.title}". Please modify "manifest.json" file or change folder name.`); }
+    if (skriptFolder.indexOf(manifest.title) === -1) { throw new Error(`Folder name is not same as manifest.title "${manifest.title}". Please modify "manifest.json" file or change folder name.`); }
 
 
 
@@ -102,4 +102,4 @@ const uploadOneTask = async () => {
 
 
 
-module.exports = uploadOneTask;
+module.exports = uploadOneSkript;

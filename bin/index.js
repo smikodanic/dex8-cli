@@ -53,22 +53,22 @@ program
 
 
 /**
- * Initialize new dex8 task by coping folder "task_templates/...".
+ * Initialize new dex8 skript by coping folder "skript_templates/...".
  * $ dex8 init
  */
 program
   .command('init')
-  .description('Initialize new task. Create folder with initial files.')
+  .description('Initialize new skript. Create folder with initial files.')
   .action(init);
 
 
 /**
- * Delete complete task. Be careful when using this.
- * $dex8 delete <taskTitle>
+ * Delete complete skript. Be careful when using this.
+ * $dex8 delete <skriptTitle>
  */
 program
-  .command('delete <taskTitle>')
-  .description('Delete a task. Be careful with this command !!!')
+  .command('delete <skriptTitle>')
+  .description('Delete a skript. Be careful with this command !!!')
   .action(del);
 
 
@@ -79,12 +79,12 @@ program
 program
   .command('bundle')
   .alias('b')
-  .description('Bundle dex8 task in the ./dist/mainBundle.js.')
+  .description('Bundle dex8 skript in the ./dist/mainBundle.js.')
   .action(bundle);
 
 
 /**
- * Start the dex8 task.
+ * Start the dex8 skript.
  * $dex8 start -i input.json
  */
 program
@@ -92,46 +92,46 @@ program
   .option('-i, --input <inp>', 'Select input file, for example "input_user1.js" or "input_user1.json".')
   .option('-l, --library <lib>', 'Select library file, for example "input_library.js".')
   .option('-b, --bundle', 'Use ./dist/mainBundle.js instead of ./main.js')
-  .description('Start dex8 task with or without input file.')
+  .description('Start dex8 skript with or without input file.')
   .action(start);
 
 
 /**
- * Upload the dex8 task.
- * $dex8 upload                 - upload task from current working directory
- * $dex8 upload -t <taskTitle>   - upload task by name
- * $dex8 upload -all            - upload all dex8 tasks
+ * Upload the dex8 skript.
+ * $dex8 upload                 - upload skript from current working directory
+ * $dex8 upload -t <skriptTitle>   - upload skript by name
+ * $dex8 upload -all            - upload all dex8 skripts
  */
 program
   .command('upload')
   .alias('u')
-  .description('Upload dex8 task.')
-  .option('-t, --task <taskTitle>', 'Upload a task defined by title.')
-  .option('-a, --all', 'Upload all dex8 tasks.')
+  .description('Upload dex8 skript.')
+  .option('-t, --skript <skriptTitle>', 'Upload a skript defined by title.')
+  .option('-a, --all', 'Upload all dex8 skripts.')
   .action(upload);
 
 
 /**
- * Update the task details.
- * This command will update task details written in manifest.json and howto.html.
+ * Update the skript details.
+ * This command will update skript details written in manifest.json and howto.html.
  * Although same can be done with "$dex8 upload" this is much faster because it will not change files.
  * $dex8 update
  */
 program
   .command('update')
-  .description('Update task details e.g. manifest.json and howto.html.')
+  .description('Update skript details e.g. manifest.json and howto.html.')
   .action(update);
 
 
 /**
- * Download the dex8 task.
- * $dex8 download <task_id> - download task to current working directory
- * "task_id" is mongoDB ObjectId , for example: 5e20355c72cdfa2127619493
+ * Download the dex8 skript.
+ * $dex8 download <skript_id> - download skript to current working directory
+ * "skript_id" is mongoDB ObjectId , for example: 5e20355c72cdfa2127619493
  */
 program
-  .command('download <task_id>')
+  .command('download <skript_id>')
   .alias('d')
-  .description('Download dex8 task.')
+  .description('Download dex8 skript.')
   .action(download);
 
 

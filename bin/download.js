@@ -1,6 +1,6 @@
 /**
- * Download Dex8 task.
- * $ dex8 download <task_id>
+ * Download Dex8 skript.
+ * $ dex8 download <skript_id>
  */
 const fse = require('fs-extra');
 const chalk = require('chalk');
@@ -10,29 +10,29 @@ const config = require('../config.js');
 
 
 
-module.exports = async (task_id) => {
-  const taskFolder = process.cwd();
+module.exports = async (skript_id) => {
+  const skriptFolder = process.cwd();
 
   try {
 
     /*** 0) remove all files except dex8auth.json ***/
-    const oldFiles = await fse.readdir(taskFolder);
+    const oldFiles = await fse.readdir(skriptFolder);
     for (const oldFile of oldFiles) {
       const stat = await fse.lstat(oldFile);
       if (stat.isFile() && oldFile !== 'dex8auth.json') {
-        await fse.remove(path.join(taskFolder, oldFile));
+        await fse.remove(path.join(skriptFolder, oldFile));
         console.log(`Deleted ${oldFile}`);
       }
     }
 
 
     /*** 1) get dex8auth.json  (which is created after successful login) ***/
-    const authPath = path.join(taskFolder, 'dex8auth.json');
+    const authPath = path.join(skriptFolder, 'dex8auth.json');
     const tf = await fse.pathExists(authPath);
     if (!tf) { throw new Error(`File "dex8auth.json" is not created. Please login.`); }
     const conf = require(authPath);
 
-    /*** 2) send API request to /cli/download/:task_id ***/
+    /*** 2) send API request to /cli/download/:skript_id ***/
     // init httpClient
     const opts = {
       encodeURI: false,
@@ -56,27 +56,27 @@ module.exports = async (task_id) => {
     const dhc = new HttpClient(opts);
 
     // send POST /cli/login request
-    const url = `${config.mainapiBaseURL}/cli/download/${task_id}`;
+    const url = `${config.mainapiBaseURL}/cli/download/${skript_id}`;
     const answer = await dhc.askJSON(url, 'GET', {});
     // console.log(answer);
 
-    const task = answer.res.content.task;
+    const skript = answer.res.content.skript;
     const files = answer.res.content.files;
-    if (!task) { throw new Error(`Task ${task_id} does not exists.`); }
+    if (!skript) { throw new Error(`Skript ${skript_id} does not exists.`); }
 
-    console.log(`\nDownloading task "${task.title}" into "${taskFolder}"...\n`);
+    console.log(`\nDownloading skript "${skript.title}" into "${skriptFolder}"...\n`);
 
 
-    // check if task.title is same as current folder
-    const fracts = taskFolder.split('/');
-    if (fracts[fracts.length - 1] !== task.title) { throw new Error(`Folder name should be same as task title. Please rename your folder to "${task.title}".`); }
+    // check if skript.title is same as current folder
+    const fracts = skriptFolder.split('/');
+    if (fracts[fracts.length - 1] !== skript.title) { throw new Error(`Folder name should be same as skript title. Please rename your folder to "${skript.title}".`); }
 
 
 
     /*** 3) create .js files ***/
     files.forEach(f => {
       console.log('Creating ', f.name);
-      const filePath = path.join(taskFolder, f.name);
+      const filePath = path.join(skriptFolder, f.name);
       fse.ensureFile(filePath).then(() => fse.writeFile(filePath, f.content, { encoding: 'utf8', flag: 'w' }));
     });
 
@@ -91,7 +91,7 @@ module.exports = async (task_id) => {
       const f_cloned = { ...f }; // clone file object because we don't want to modify files array
       delete f_cloned.content;
       delete f_cloned.user_id;
-      delete f_cloned.task_id;
+      delete f_cloned.skript_id;
       delete f_cloned.created_at;
       delete f_cloned.updated_at;
       delete f_cloned.__v;
@@ -99,14 +99,14 @@ module.exports = async (task_id) => {
       return f_cloned;
     });
     const manifest = {
-      title: task.title,
-      description: task.description,
-      thumbnail: task.thumbnail,
-      category: task.category,
+      title: skript.title,
+      description: skript.description,
+      thumbnail: skript.thumbnail,
+      category: skript.category,
       files: files2,
       howto: ''
     };
-    const filePath1 = path.join(taskFolder, 'manifest.json');
+    const filePath1 = path.join(skriptFolder, 'manifest.json');
     fse.ensureFile(filePath1).then(() => fse.writeJson(filePath1, manifest, { spaces: 2 }));
 
 
@@ -115,8 +115,8 @@ module.exports = async (task_id) => {
 
     /*** 5) create howto.html ***/
     console.log('Creating howto.html');
-    const filePath2 = path.join(taskFolder, 'howto.html');
-    fse.ensureFile(filePath2).then(() => fse.writeFile(filePath2, task.howto, { encoding: 'utf8', flag: 'w' }));
+    const filePath2 = path.join(skriptFolder, 'howto.html');
+    fse.ensureFile(filePath2).then(() => fse.writeFile(filePath2, skript.howto, { encoding: 'utf8', flag: 'w' }));
 
 
     await new Promise(resolve => setTimeout(resolve, 400)); // delay
@@ -124,8 +124,8 @@ module.exports = async (task_id) => {
 
     /*** 6) create hidden file .editorconfig ***/
     console.log('Creating .editorconfig');
-    const editorconfigContent = await fse.readFile(path.join(__dirname, 'task_templates/basic/.editorconfig'));
-    const filePath3 = path.join(taskFolder, '.editorconfig');
+    const editorconfigContent = await fse.readFile(path.join(__dirname, 'skript_templates/basic/.editorconfig'));
+    const filePath3 = path.join(skriptFolder, '.editorconfig');
     fse.ensureFile(filePath3).then(() => fse.writeFile(filePath3, editorconfigContent, { encoding: 'utf8', flag: 'w' }));
 
 
@@ -134,8 +134,8 @@ module.exports = async (task_id) => {
 
     /*** 7) create hidden file .eslintrc ***/
     console.log('Creating .eslintrc');
-    const eslintrcContent = await fse.readFile(path.join(__dirname, 'task_templates/basic/.eslintrc'));
-    const filePath4 = path.join(taskFolder, '.eslintrc');
+    const eslintrcContent = await fse.readFile(path.join(__dirname, 'skript_templates/basic/.eslintrc'));
+    const filePath4 = path.join(skriptFolder, '.eslintrc');
     fse.ensureFile(filePath4).then(() => fse.writeFile(filePath4, eslintrcContent, { encoding: 'utf8', flag: 'w' }));
 
 
@@ -144,11 +144,11 @@ module.exports = async (task_id) => {
 
     /*** 7) create hidden file .gitignore ***/
     console.log('Creating .gitignore');
-    const gitignoreContent = await fse.readFile(path.join(__dirname, 'task_templates/basic/gitignore'));
-    const filePath5 = path.join(taskFolder, '.gitignore');
+    const gitignoreContent = await fse.readFile(path.join(__dirname, 'skript_templates/basic/gitignore'));
+    const filePath5 = path.join(skriptFolder, '.gitignore');
     fse.ensureFile(filePath5).then(() => fse.writeFile(filePath5, gitignoreContent, { encoding: 'utf8', flag: 'w' }));
 
-    console.log('\nThe task is downloaded');
+    console.log('\nThe skript is downloaded');
 
   } catch (err) {
     console.log(chalk.red(err.message));

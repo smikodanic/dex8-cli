@@ -2,7 +2,7 @@ const FunctionFlow = require('@mikosoft/functionflow');
 const Echo = require('@mikosoft/echo');
 
 
-// task files
+// skript files
 const f1 = require('./f1.js');
 
 

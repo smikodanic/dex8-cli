@@ -1,7 +1,7 @@
 {
-  "name": "dex8-task",
+  "name": "dex8-skript",
   "version": "1.0.0",
-  "description": "A DEX8 task is a Node.js script that runs on the dex8.com Serverless platform.",
+  "description": "A DEX8 skript is a Node.js script that runs on the dex8.com Serverless platform.",
   "main": "main.js",
   "scripts": {
     "inst": "rm -rf node_modules && rm package-lock.json && npm install"
