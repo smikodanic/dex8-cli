@@ -12,7 +12,6 @@ module.exports = async () => {
       { type: 'input', name: 'skriptDescription', message: 'Skript description:' },
       { type: 'input', name: 'skriptCategory', message: 'Skript category:', default: 'general' },
       { type: 'input', name: 'skriptThumbnail', message: 'Skript thumbnail URL:' },
-      { type: 'confirm', name: 'skriptOutputResponse', message: 'Should client receive the output:', default: false },
       { type: 'list', name: 'skriptEnvironment', message: 'Select skript environment:', choices: ['nodejs', 'browser', 'python'], default: 'nodejs' },
       { type: 'list', name: 'template', message: 'Select skript template:', choices: ['basic', 'puppeteer'], default: false }
     ];
@@ -23,7 +22,6 @@ module.exports = async () => {
     const skriptDescription = answers.skriptDescription.replace(/\s+/g, ' ').trim();
     const skriptCategory = answers.skriptCategory.replace(/\s+/g, ' ').trim();
     const skriptThumbnail = answers.skriptThumbnail.replace(/\s+/g, '').trim();
-    const skriptOutputResponse = answers.skriptOutputResponse;
     const skriptEnvironment = answers.skriptEnvironment;
 
     if (!skriptTitle) { throw new Error('The Skript title is required.'); }
@@ -58,7 +56,6 @@ module.exports = async () => {
     manifest_obj.description = skriptDescription;
     manifest_obj.category = skriptCategory;
     manifest_obj.thumbnail = skriptThumbnail;
-    manifest_obj.output_response = skriptOutputResponse;
     manifest_obj.environment = skriptEnvironment;
     await fse.writeFile(manifestJson_path, JSON.stringify(manifest_obj, null, 2), { encoding: 'utf8' });
 
