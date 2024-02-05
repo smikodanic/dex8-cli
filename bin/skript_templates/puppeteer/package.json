@@ -4,7 +4,8 @@
   "description": "A DEX8 skript is a Node.js script that runs on the dex8.com Serverless platform.",
   "main": "main.js",
   "scripts": {
-    "inst": "rm -rf node_modules && rm package-lock.json && npm install"
+    "inst": "rm -rf node_modules && rm package-lock.json && npm install",
+    "inst-win": "rmdir /S /Q node_modules && del package-lock.json && npm install"
   },
   "license": "MIT",
   "dependencies": {
