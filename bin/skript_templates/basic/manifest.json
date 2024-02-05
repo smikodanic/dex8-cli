@@ -3,6 +3,5 @@
   "description": "DEX8 Skript with basic libraries Echo and Functionflow.",
   "category": "general",
   "thumbnail": "",
-  "output_response": false,
   "environment": "nodejs"
 }
