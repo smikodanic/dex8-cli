@@ -20,7 +20,8 @@ const shortNow = () => {
 
 module.exports = async (optionsObj) => {
   // option values
-  const input_selected = optionsObj.input;
+  const input_selected = optionsObj.input || 'input.json';
+  const inputSecret_selected = optionsObj.inputSecret || 'inputSecret.json';
   const library_selected = optionsObj.library;
   const isBundled = optionsObj.bundle;
 
@@ -54,23 +55,24 @@ module.exports = async (optionsObj) => {
   }
 
 
-  /**** 5) Fetch input and inputSecret.json  (inputSecret.json is gitignored) ****/
-  let input;
-  if (!!input_selected) {
-    const input_selectedPath = path.join(process.cwd(), input_selected);
-    const inputExists = await fse.pathExists(input_selectedPath);
-    if (!inputExists) { console.log(chalk.red(`Input file does not exists: ${input_selected}`)); return; }
-    // delete require.cache[input_selectedPath];
-    input = require(input_selectedPath);
-    if (typeof input !== 'object') { console.log(chalk.red(`Input is ${typeof input}. It should be an object.`)); return; }
-    if (Array.isArray(input)) { console.log(chalk.red('Input is array and it should be an object.')); return; }
-  }
+  /**** 5) Fetch input.json and inputSecret.json  (inputSecret.json is gitignored) ****/
+  const input_selectedPath = path.join(process.cwd(), input_selected);
+  const inputExists = await fse.pathExists(input_selectedPath);
+  if (!inputExists) { console.log(chalk.red(`Input file does not exists: ${input_selected}`)); return; }
+  // delete require.cache[input_selectedPath];
+  const input = require(input_selectedPath);
+  if (typeof input !== 'object') { console.log(chalk.red(`Input is ${typeof input}. It should be an object.`)); return; }
+  if (Array.isArray(input)) { console.log(chalk.red('Input is array and it should be an object.')); return; }
 
-  if (fse.pathExistsSync('./inputSecret.json')) {
-    const inputSecretPath = path.join(process.cwd(), './inputSecret.json');
-    console.log(inputSecretPath);
-    const inputSecret = require(inputSecretPath);
-    if (input) { input = { ...input, ...inputSecret }; }
+
+  const inputSecret_selectedPath = path.join(process.cwd(), inputSecret_selected);
+  const inputSecretExists = await fse.pathExists(inputSecret_selectedPath);
+  let inputJoined;
+  if (inputSecretExists) {
+    const inputSecret = require(inputSecret_selectedPath);
+    if (input) { inputJoined = { ...input, ...inputSecret }; }
+  } else {
+    console.log(chalk.red(`Input Secret file does not exists: ${inputSecret_selected}`)); return;
   }
 
 
@@ -89,10 +91,9 @@ module.exports = async (optionsObj) => {
   }
 
 
-
   /**** 7) EXECUTE main ****/
   try {
-    const output = await main(input, library);
+    const output = await main(inputJoined, library);
     console.log(`\nSkript "${skript_title}" is ended on ${shortNow()}`);
     console.log('output:: ', output);
   } catch (err) {

@@ -89,7 +89,8 @@ program
  */
 program
   .command('start')
-  .option('-i, --input <inp>', 'Select input file, for example "input_user1.js" or "input_user1.json".')
+  .option('-i, --input <inp>', 'Select input file, for example "input_user1.json".')
+  .option('-is, --inputSecret <inpSec>', 'Select inputSecret file, for example "inputSecret.json".')
   .option('-l, --library <lib>', 'Select library file, for example "input_library.js".')
   .option('-b, --bundle', 'Use ./dist/mainBundle.js instead of ./main.js')
   .description('Start dex8 skript with or without input file.')
