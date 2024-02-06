@@ -7,6 +7,7 @@ const fse = require('fs-extra');
 const chalk = require('chalk');
 const moment = require('moment');
 const { EventEmitter } = require('events');
+const print = require('./helper_print');
 
 
 /**
@@ -95,7 +96,8 @@ module.exports = async (optionsObj) => {
   try {
     const output = await main(inputJoined, library);
     console.log(`\nSkript "${skript_title}" is ended on ${shortNow()}`);
-    console.log('output:: ', output);
+    console.log('output:: ');
+    print(output);
   } catch (err) {
     console.log(`\nSkript "${skript_title}" exited with error on ${shortNow()}`);
     console.log(err);
