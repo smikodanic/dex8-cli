@@ -69,11 +69,12 @@ module.exports = async (optionsObj) => {
   const inputSecret_selectedPath = path.join(process.cwd(), inputSecret_selected);
   const inputSecretExists = await fse.pathExists(inputSecret_selectedPath);
   let inputJoined;
-  if (inputSecretExists) {
-    const inputSecret = require(inputSecret_selectedPath);
-    if (input) { inputJoined = { ...input, ...inputSecret }; }
+  if (!inputSecretExists) {
+    console.log(chalk.yellow(`WARNING: Input Secret file is not used.`));
+    inputJoined = input;
   } else {
-    console.log(chalk.red(`Input Secret file does not exists: ${inputSecret_selected}`)); return;
+    const inputSecret = require(inputSecret_selectedPath);
+    inputJoined = { ...input, ...inputSecret };
   }
 
 
