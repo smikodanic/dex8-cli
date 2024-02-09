@@ -58,6 +58,7 @@ program
  */
 program
   .command('init')
+  .alias('i')
   .description('Initialize new skript. Create folder with initial files.')
   .action(init);
 
@@ -68,7 +69,7 @@ program
  */
 program
   .command('delete <skriptTitle>')
-  .description('Delete a skript. Be careful with this command !!!')
+  .description('Delete a skript. Be careful with this command !')
   .action(del);
 
 
@@ -89,9 +90,9 @@ program
  */
 program
   .command('start')
-  .option('-i, --input <inp>', 'Select input file, for example "input_user1.json".')
+  .alias('s')
+  .option('-i, --input <inp>', 'Select input file, for example "input.json".')
   .option('-is, --inputSecret <inpSec>', 'Select inputSecret file, for example "inputSecret.json".')
-  .option('-l, --library <lib>', 'Select library file, for example "input_library.js".')
   .option('-b, --bundle', 'Use ./dist/mainBundle.js instead of ./main.js')
   .description('Start dex8 skript with or without input file.')
   .action(start);
@@ -107,20 +108,20 @@ program
   .command('upload')
   .alias('u')
   .description('Upload dex8 skript.')
-  .option('-t, --skript <skriptTitle>', 'Upload a skript defined by title.')
+  .option('-s, --skript <skriptTitle>', 'Upload a skript defined by title.')
   .option('-a, --all', 'Upload all dex8 skripts.')
   .action(upload);
 
 
 /**
  * Update the skript details.
- * This command will update skript details written in manifest.json and howto.html.
+ * This command will update skript details written in manifest.json.
  * Although same can be done with "$dex8 upload" this is much faster because it will not change files.
  * $dex8 update
  */
 program
   .command('update')
-  .description('Update skript details e.g. manifest.json and howto.html.')
+  .description('Update skript details e.g. manifest.json.')
   .action(update);
 
 

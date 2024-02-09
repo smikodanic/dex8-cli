@@ -21,9 +21,8 @@ const shortNow = () => {
 
 module.exports = async (optionsObj) => {
   // option values
-  const input_selected = optionsObj.input || 'input.json';
-  const inputSecret_selected = optionsObj.inputSecret || 'inputSecret.json';
-  const library_selected = optionsObj.library;
+  const input_selected = optionsObj.input;
+  const inputSecret_selected = optionsObj.inputSecret;
   const isBundled = optionsObj.bundle;
 
 
@@ -37,12 +36,13 @@ module.exports = async (optionsObj) => {
 
 
   /**** 3) START message ****/
-  console.log(`Skript "${skript_title}" started on ${shortNow()}\n`);
+  console.log(chalk.bgGreen(`Skript "${skript_title}" started on ${shortNow()}`));
 
 
   /**** 4) Fetch main function ****/
   let main;
   if (isBundled) {
+    console.log(chalk.bgGreen(`The bundled skript is used.`));
     const mainBundlePath = path.join(process.cwd(), './dist/mainBundle.js');
     const mainBundleExists = await fse.pathExists(mainBundlePath);
     if (!mainBundleExists) { console.log(chalk.red(`Skript "${skript_title}" does not have "dist/mainBundle.js" file. Use command: $dex8 bundle`)); return; }
@@ -56,51 +56,38 @@ module.exports = async (optionsObj) => {
   }
 
 
-  /**** 5) Fetch input.json and inputSecret.json  (inputSecret.json is gitignored) ****/
-  const input_selectedPath = path.join(process.cwd(), input_selected);
-  const inputExists = await fse.pathExists(input_selectedPath);
-  if (!inputExists) { console.log(chalk.red(`Input file does not exists: ${input_selected}`)); return; }
-  // delete require.cache[input_selectedPath];
-  const input = require(input_selectedPath);
-  if (typeof input !== 'object') { console.log(chalk.red(`Input is ${typeof input}. It should be an object.`)); return; }
-  if (Array.isArray(input)) { console.log(chalk.red('Input is array and it should be an object.')); return; }
-
-
-  const inputSecret_selectedPath = path.join(process.cwd(), inputSecret_selected);
-  const inputSecretExists = await fse.pathExists(inputSecret_selectedPath);
-  let inputJoined;
-  if (!inputSecretExists) {
-    console.log(chalk.yellow(`WARNING: Input Secret file is not used.`));
-    inputJoined = input;
-  } else {
-    const inputSecret = require(inputSecret_selectedPath);
-    inputJoined = { ...input, ...inputSecret };
+  /**** 5) Fetch input.json ****/
+  let input;
+  if (!!input_selected) {
+    const input_selectedPath = path.join(process.cwd(), input_selected);
+    const inputExists = await fse.pathExists(input_selectedPath);
+    if (inputExists) { input = require(input_selectedPath); }
   }
 
 
-  /**** 6) Fetch library ****/
-  let library;
-  if (!!library_selected) {
-    const library_selectedPath = path.join(process.cwd(), library_selected);
-    const libraryExists = await fse.pathExists(library_selectedPath);
-    if (!libraryExists) { console.log(chalk.red(`Library file does not exists: ${library_selected}`)); return; }
-    // delete require.cache[library_selectedPath];
-    library = require(library_selectedPath);
-  } else {
-    const eventEmitter = new EventEmitter();
-    eventEmitter.setMaxListeners(5); // 10 by default
-    library = { eventEmitter };
+  /**** 6) Fetch inputSecret.json  (inputSecret.json is gitignored and encoded in MongoDB) ****/
+  let inputSecret;
+  if (!!inputSecret_selected) {
+    const inputSecret_selectedPath = path.join(process.cwd(), inputSecret_selected);
+    const inputSecretExists = await fse.pathExists(inputSecret_selectedPath);
+    if (inputSecretExists) { inputSecret = require(inputSecret_selectedPath); }
   }
 
 
-  /**** 7) EXECUTE main ****/
+  /**** 7) event emmiter in global vriable ****/
+  const eventEmitter = new EventEmitter();
+  eventEmitter.setMaxListeners(5); // 10 by default
+  global.dex8 = { eventEmitter };
+
+
+  /**** 8) EXECUTE main ****/
   try {
-    const output = await main(inputJoined, library);
-    console.log(`\nSkript "${skript_title}" is ended on ${shortNow()}`);
+    const output = await main(input, inputSecret);
+    console.log(chalk.bgGreen(`Skript "${skript_title}" is ended on ${shortNow()}`));
     console.log('output:: ');
     print(output);
   } catch (err) {
-    console.log(`\nSkript "${skript_title}" exited with error on ${shortNow()}`);
+    console.log(chalk.bgRed(`Skript "${skript_title}" exited with error on ${shortNow()}`));
     console.log(err);
   }
 
