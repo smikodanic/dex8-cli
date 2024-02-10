@@ -10,11 +10,13 @@ const login = require('./login.js');
 const logout = require('./logout.js');
 const init = require('./init.js');
 const del = require('./del.js');
+const bundle = require('./bundle.js');
+const bundleRemove = require('./bundleRemove');
 const start = require('./start.js');
 const upload = require('./upload.js');
 const update = require('./update.js');
 const download = require('./download.js');
-const bundle = require('./bundle.js');
+
 
 
 program
@@ -82,6 +84,17 @@ program
   .alias('b')
   .description('Bundle dex8 skript in the ./dist/mainBundle.js.')
   .action(bundle);
+
+
+/**
+ * Remove bundle directory i.e. the ./dist/ directory.
+ * $dex8 bundleRemove
+ */
+program
+  .command('bundleRemove')
+  .alias('brm')
+  .description('Remove bundle directory ./dist/')
+  .action(bundleRemove);
 
 
 /**

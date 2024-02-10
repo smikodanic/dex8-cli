@@ -44,8 +44,10 @@ module.exports = async () => {
     const body = await inquirer.prompt(questions); // {username, passsword}
     const answer = await dhc.askJSON(url, 'POST', body);
 
+
     // status
-    if (answer.status !== 200) { throw new Error(answer.res.content.message); }
+    const errMsg = answer.res.content && answer.res.content.error_message ? answer.res.content.error_message : answer.statusMessage;
+    if (answer.status !== 200) { throw new Error(errMsg); }
 
 
     // create config file

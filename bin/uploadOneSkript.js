@@ -156,15 +156,11 @@ const uploadOneSkript = async (skriptTitle) => {
     const url = config.mainapiBaseURL + '/cli/upload';
     const answer = await dhc.askJSON(url, 'POST', body);
 
-    if (answer.status === 200) {
-      console.log(chalk.green(answer.res.content.msg));
-    } else {
-      console.log(chalk.red(answer.statusMessage));
-      console.log(chalk.red(answer.res.content.message));
-    }
+    // status
+    const errMsg = answer.res.content && answer.res.content.error_message ? answer.res.content.error_message : answer.statusMessage;
+    if (answer.status !== 200) { throw new Error(errMsg); }
 
-    await new Promise(resolve => setTimeout(resolve, 1300));
-
+    console.log(chalk.green(answer.res.content.msg));
 
   } catch (err) {
     console.log(chalk.red(err.message));

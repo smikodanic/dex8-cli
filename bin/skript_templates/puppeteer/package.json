@@ -10,7 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "@mikosoft/echo": "^1.0.1",
-    "@mikosoft/functionflow": "^1.0.1",
+    "@mikosoft/functionflow": "^1.0.3",
     "@mikosoft/httpclient-pptr": "^2.0.0",
     "puppeteer-core": "^5.1.0"
   }
