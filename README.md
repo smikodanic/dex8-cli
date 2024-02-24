@@ -80,6 +80,13 @@ Alias:
 $ dex8 b
 ```
 
+#### $ dex8 bundleRemove
+Remove the /dist/ directory.
+```
+Alias:
+$ dex8 brm
+```
+
 
 #### $ dex8 start -i input.json -is inputSecret.js
 Once a skript is created, utilize this command to start a DEX8 Skript. The inputSecret.json will holds passwords and other confidential information.
