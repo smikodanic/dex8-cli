@@ -1,18 +1,13 @@
-const PptrPlus = require('pptr-plus');
-
-
-/**
- * Open the browser and a tab.
- */
 module.exports = async (x, lib) => {
   const ff = lib.ff;
   const echo = lib.echo;
   const sysconfig = lib.sysconfig;
+  const proxy = lib.input.proxy;
+  console.log('proxy::', proxy);
 
-  echo.log('----- browserPage ----');
-  echo.log('Platform: ', sysconfig.osPlatform);
-  echo.log('Device: ', sysconfig.device);
-  echo.log('Puppeteer: ', sysconfig.puppeteer);
+  await echo.log('Platform: ', sysconfig.osPlatform);
+  await echo.log('Device: ', sysconfig.device);
+  await echo.log('Puppeteer: ', sysconfig.puppeteer);
 
   // start the browser
   const browser = await lib.puppeteer.launch(sysconfig.puppeteer).catch(err => echo.error(err));
@@ -24,14 +19,24 @@ module.exports = async (x, lib) => {
   await page.bringToFront();
 
 
+  // proxy authentication
+  // await page.setExtraHTTPHeaders({
+  //   'Proxy-Authorization': 'Basic ' + Buffer.from(`${proxy.username}:${proxy.password}`).toString('base64'),
+  // });
+
+  if (!!proxy.ip) {
+    await page.authenticate({
+      username: proxy.username,
+      password: proxy.password,
+    });
+  }
+
+
   const width = sysconfig.device.viewport.width;
   const height = sysconfig.device.viewport.height;
   await page.setViewport({ width, height });
 
-  // pptr-plus
-  const pptrPlus = new PptrPlus(page);
-
-  ff.libAdd({ browser, page, pptrPlus });
+  ff.libAdd({ browser, page });
 
   return x;
 };

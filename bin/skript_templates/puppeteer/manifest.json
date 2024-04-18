@@ -1,7 +1,8 @@
 {
-  "title": "puppeteer-skript",
-  "description": "DEX8 Skript to launch a URL using Puppeteer and a web browser.",
+  "title": "dex8-skript",
+  "description": "Skript description",
   "category": "general",
   "thumbnail": "",
-  "environment": "nodejs"
+  "environment": "nodejs",
+  "worker_response_timeout": 5000
 }

@@ -93,7 +93,7 @@ Once a skript is created, utilize this command to start a DEX8 Skript. The input
 ```
 Options:
 -i --input  <input.json>      select input file (initial data for DEX8 skript)
--is --inputSecret  <inputSecret.js>     input file with secret data
+-is --inputSecret  <inputSecret.json>     input file with secret data
 -b --bundle       execute dist/mainBundle.js instead of main.js
 ```
 ```
@@ -129,7 +129,7 @@ Download skript files using the skript_id parameter, which can be located in the
 
 ```
 Alias:
-$ dex8 d
+$ dex8 d <skript_id>
 ```
 
 

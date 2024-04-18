@@ -1,3 +1,4 @@
 node_modules
 npm-debug.log
 bin/skript_templates/*/node_modules
+bin/skript_templates/*/inputSecret*

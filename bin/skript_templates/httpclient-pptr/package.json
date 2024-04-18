@@ -1,7 +1,7 @@
 {
   "name": "dex8-skript",
   "version": "1.0.0",
-  "description": "Skript description",
+  "description": "A DEX8 skript is a Node.js script that runs on the dex8.com Serverless platform.",
   "main": "main.js",
   "scripts": {
     "inst": "rm -rf node_modules && rm package-lock.json && npm install",
@@ -10,8 +10,8 @@
   "license": "MIT",
   "dependencies": {
     "@mikosoft/echo": "^1.0.1",
-    "@mikosoft/functionflow": "^1.0.5",
-    "pptr-plus": "^1.0.2",
+    "@mikosoft/functionflow": "^1.0.3",
+    "@mikosoft/httpclient-pptr": "^2.0.0",
     "puppeteer-core": "^12.0.1"
   }
 }
