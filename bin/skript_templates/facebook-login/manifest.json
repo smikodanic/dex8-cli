@@ -1,0 +1,8 @@
+{
+  "title": "facebook-login",
+  "description": "",
+  "category": "social/facebook",
+  "thumbnail": "",
+  "environment": "nodejs",
+  "worker_response_timeout": 5000
+}

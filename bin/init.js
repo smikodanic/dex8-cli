@@ -13,7 +13,7 @@ module.exports = async () => {
       { type: 'input', name: 'skriptCategory', message: 'Skript category:', default: 'general' },
       { type: 'input', name: 'skriptThumbnail', message: 'Skript thumbnail URL:' },
       { type: 'list', name: 'skriptEnvironment', message: 'Select skript environment:', choices: ['nodejs', 'browser', 'python'], default: 'nodejs' },
-      { type: 'list', name: 'template', message: 'Select skript template:', choices: ['basic', 'puppeteer', 'httpclient-pptr'], default: false }
+      { type: 'list', name: 'template', message: 'Select skript template:', choices: ['basic', 'puppeteer', 'httpclient-pptr', 'facebook-login'], default: false }
     ];
 
     const answers = await inquirer.prompt(questions);
