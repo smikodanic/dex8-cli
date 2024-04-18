@@ -8,7 +8,7 @@ module.exports = async (x, lib) => {
   const fb_email = lib.inputSecret.fb_email;
 
 
-  await echo.log(`+++++ loginSession_save +++++`);
+  await echo.log(`----- loginSession_save -----`);
 
   // get cookies, local and session storage
   const cookies = await page.cookies(); // array

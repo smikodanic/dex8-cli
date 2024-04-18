@@ -46,7 +46,8 @@ module.exports = async (input, inputSecret) => {
   await ff.one(dbConnect); // connect to mongoDB database
   await ff.one(browserPage);
   y = await ff.serial([loginOpenPage, loginSession_load, login, loginSession_save]); // fb login
-  y = await ff.serial([logout, browserClose, dbDisconnect]);
+  // y = await ff.one(logout); // after logout loginSession_load will not work
+  y = await ff.serial([browserClose, dbDisconnect]);
 
 
   const output = y;
