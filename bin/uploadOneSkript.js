@@ -8,6 +8,8 @@ const chalk = require('chalk');
 const path = require('path');
 const { HttpClient } = require('@mikosoft/httpclient-node');
 const config = require('../config.js');
+const jsonFixer = require('./helper_jsonFixer.js');
+
 
 
 
@@ -101,7 +103,8 @@ const uploadOneSkript = async (skriptTitle) => {
 
       if (/^input(?!Secret).*\.json/.test(name)) {
         console.log(' Reading input file:', name);
-        const val = await fse.readJson(filePath, 'utf8');
+        let val = await fse.readJson(filePath, 'utf8');
+        val = jsonFixer.dollarModify(val); // replace "$ with "__$ in {"$gte": 55}
         if (!val) { throw new Error(`Empty val in ${name}`); }
         body.inputs.push({ name, val });
       } else if (/^inputSecret.*\.json/.test(name)) {

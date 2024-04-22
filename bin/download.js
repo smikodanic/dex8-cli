@@ -7,6 +7,7 @@ const chalk = require('chalk');
 const path = require('path');
 const { HttpClient } = require('@mikosoft/httpclient-node');
 const config = require('../config.js');
+const jsonFixer = require('./helper_jsonFixer.js');
 
 
 
@@ -61,8 +62,10 @@ module.exports = async (skript_id) => {
     // console.log(answer);
 
     const skript = answer.res.content.skript;
-    const files = answer.res.content.files;
-    if (!skript) { throw new Error(`Skript ${skript_id} does not exists.`); }
+    const skriptFiles = answer.res.content.skriptFiles;
+    const inputs = answer.res.content.inputs;
+    const inputSecrets = answer.res.content.inputSecrets;
+    if (!skript) { throw new Error(`Skript _id:${skript_id} does not exists.`); }
 
     console.log(`\nDownloading skript "${skript.title}" into "${skriptFolder}"...\n`);
 
@@ -73,38 +76,40 @@ module.exports = async (skript_id) => {
 
 
 
-    /*** 3) create .js files ***/
-    files.forEach(f => {
-      console.log('Creating ', f.name);
+    /*** 3.A) create .js files ***/
+    skriptFiles.forEach(async f => {
+      console.log('Create file:', f.name);
       const filePath = path.join(skriptFolder, f.name);
-      fse.ensureFile(filePath).then(() => fse.writeFile(filePath, f.content, { encoding: 'utf8', flag: 'w' }));
+      await fse.ensureFile(filePath).then(() => fse.writeFile(filePath, f.content, { encoding: 'utf8', flag: 'w' }));
     });
 
 
     await new Promise(resolve => setTimeout(resolve, 400)); // delay
 
+    /*** 3.B) create input*.js files ***/
+    inputs.forEach(async f => {
+      console.log('Create input file:', f.name);
+      const filePath = path.join(skriptFolder, f.name);
+      const val = jsonFixer.dollarUnmodify(f.val);
+      const content = JSON.stringify(val, null, 4);
+      await fse.ensureFile(filePath).then(() => fse.writeFile(filePath, content, { encoding: 'utf8', flag: 'w' }));
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 400)); // delay
+
+    /*** 3.C) create inputSecret*.js files ***/
+    console.log(chalk.yellow('File inputSecret*.json is not downloaded. Create it manually.'));
+
 
     /*** 4) create manifest.json ***/
     console.log('Creating manifest.json');
-    const files2 = files.map(f => {
-      // const f_cloned = Object.assign({}, f); // clone file object because we don't want to modify files array
-      const f_cloned = { ...f }; // clone file object because we don't want to modify files array
-      delete f_cloned.content;
-      delete f_cloned.user_id;
-      delete f_cloned.skript_id;
-      delete f_cloned.created_at;
-      delete f_cloned.updated_at;
-      delete f_cloned.__v;
-      delete f_cloned._id;
-      return f_cloned;
-    });
     const manifest = {
       title: skript.title,
       description: skript.description,
       thumbnail: skript.thumbnail,
       category: skript.category,
-      files: files2,
-      howto: ''
+      environment: skript.environment,
+      worker_response_timeout: skript.worker_response_timeout
     };
     const filePath1 = path.join(skriptFolder, 'manifest.json');
     fse.ensureFile(filePath1).then(() => fse.writeJson(filePath1, manifest, { spaces: 2 }));
@@ -113,16 +118,7 @@ module.exports = async (skript_id) => {
     await new Promise(resolve => setTimeout(resolve, 400)); // delay
 
 
-    /*** 5) create howto.html ***/
-    console.log('Creating howto.html');
-    const filePath2 = path.join(skriptFolder, 'howto.html');
-    fse.ensureFile(filePath2).then(() => fse.writeFile(filePath2, skript.howto, { encoding: 'utf8', flag: 'w' }));
-
-
-    await new Promise(resolve => setTimeout(resolve, 400)); // delay
-
-
-    /*** 6) create hidden file .editorconfig ***/
+    /*** 5) create hidden file .editorconfig ***/
     console.log('Creating .editorconfig');
     const editorconfigContent = await fse.readFile(path.join(__dirname, 'skript_templates/basic/.editorconfig'));
     const filePath3 = path.join(skriptFolder, '.editorconfig');
