@@ -18,59 +18,51 @@ module.exports = async (x, lib) => {
   await echo.log('----- httpClient_pptr -----');
   await echo.log(`...opening: ${url}`);
 
-  try {
-    const opts = {
-      headless: false, // 'new' 'old' false
-      windowPosition: [700, 20],
-      timeout: 21000,
-      referer: '',
-      block: ['image'],
-      scroll: false,
-      waitUntil: 'load', // load, networkidle, networkidle2
-      argsAppend: [
-        // '--disable-dev-shm-usage',
-        // '--use-gl=egl',
-        // '--disable-setuid-sandbox',
-        // '--no-first-run',
-        // '--no-zygote',
-        // '--single-process',
-        // '--disable-gpu',
-        // '--no-sandbox',
-        // required for iframe
-        // '--disable-web-security',
-        // '--disable-features=IsolateOrigins,site-per-process',
+
+  const opts = {
+    puppeteerLaunchOptions: {
+      executablePath: '/usr/bin/google-chrome',
+      headless: false, // new, old, false
+      devtools: false,  // open Chrome devtools
+      dumpio: false, // If true, pipes the browser process stdout and stderr to process.stdout and process.stderr
+      slowMo: 13,
+      args: [
+        '--start-maximized', // full window width and height
       ],
-      extraHeaders: {},
-      closeBrowser: true,
-      closePopups: [
-        // "button#gdpr-banner-accept"
+      ignoreDefaultArgs: [
+        '--enable-automation' // remove "Chrome is being controlled by automated test software"
       ],
-      debug: false
-    };
-    const hcp = new HttpClientPptr(opts);
-    hcp.injectPuppeteer(puppeteer);
-    hcp.defineExecutablePath(); // '/usr/bin/google-chrome'
-    hcp.setDeviceObject('Desktop Windows');
+      defaultViewport: null, // override default viewport size {width: 800, height: 600} - https://pptr.dev/api/puppeteer.browserconnectoptions/#defaultviewport
+    },
+    device: null, // {name, userAgent, viewport}
+    cookies: null, // [{name, value, domain, path, expires, httpOnly, secure}, ...]
+    storage: null, // localStorage and sessionStorage {local: {key1: val1, key2: val2, ...}, session: {key1: val1, key2: val2, ...}}
+    evaluateOnNewDocument_callback: null,
+    extraRequestHeaders: {}, // additional HTTP request headers - {authorization: 'JWT ...'}
+    blockResources: [], // resuources to block during the request, for example: ['image', 'stylesheet', 'font', 'script']
+    gotoOpts: {}, // used in page.goto(url, opts) - {referer:string, timeout:number, waitUntil:'load'|'domcontentloaded'|'networkidle0'|'networkidle2'} - https://pptr.dev/api/puppeteer.gotooptions
+    closeBrowser: true, // close browser after answer is received or on page.goto error
+    waitCSSselector: null,
+    postGoto: null, // function which will be executed after page.goto(), scroll, click on popup, etc. for example: postGoto: page => {page.evaluate(...);}
+    debug: false
+  };
+  const hcp = new HttpClientPptr(opts);
+  hcp.injectPuppeteer(puppeteer);
+  const answer = await hcp.askOnce(url);
 
-    const answer = await hcp.ask(url);
+  if (answer) { await echo.log('URL opened and answer received.'); }
 
-    if (answer) { echo.log('URL opened and answer received.'); }
+  const finalURL = answer.finalURL.replace(/\/$/, '') || url; // requested URL or URL after all redirections
+  const redirected = finalURL !== url;
+  const status = answer.status;
+  const statusMessage = answer.statusMessage;
+  const duration = answer.time.duration;
+  const html = answer.res.content;
+  const html_bytes = Buffer.byteLength(html, 'utf8');
+  const headers = answer.res.headers; // response headers
 
-    const url_after_redirect = answer.redirectedURL.replace(/\/$/, '') || url;
-    const status = answer.status;
-    const statusMessage = answer.statusMessage;
-    const redirected = url_after_redirect && url_after_redirect !== url;
-    const duration = answer.time.duration;
-    const html = answer.res.content;
-    const html_bytes = Buffer.byteLength(html, 'utf8');
-    const headers = answer.res.headers; // response headers
-
-    x.URLdata = { url, url_after_redirect, status, statusMessage, redirected, duration, html, html_bytes, headers };
-    // hcp.print(x.URLdata);
-
-  } catch (err) {
-    echo.error(err);
-  }
+  x.URLdata = { url, finalURL, redirected, status, statusMessage, duration, html, html_bytes, headers };
+  // hcp.print(x.URLdata);
 
   return x;
 };
