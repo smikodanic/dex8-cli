@@ -25,7 +25,7 @@ module.exports = async (input, inputSecret) => {
   /* process */
   let output;
   try {
-    const output = await ff.one(openURL);
+    output = await ff.one(openURL);
   } catch (err) {
     await echo.error(err);
     console.log(err);
