@@ -23,14 +23,14 @@ module.exports = async (input, inputSecret) => {
 
 
   /* process */
-  let output;
   try {
-    output = await ff.one(openURL);
+    await ff.one(openURL);
   } catch (err) {
-    await echo.error(err);
+    echo.error(err);
     console.log(err);
     throw err;
   }
 
+  const output = x;
   return output;
 };
