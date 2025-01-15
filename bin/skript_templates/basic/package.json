@@ -10,6 +10,6 @@
   "license": "MIT",
   "dependencies": {
     "@mikosoft/echo": "^1.0.1",
-    "@mikosoft/functionflow": "^1.0.3"
+    "@mikosoft/functionflow": "^1.0.6"
   }
 }

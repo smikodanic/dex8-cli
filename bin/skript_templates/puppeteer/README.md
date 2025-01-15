@@ -1,2 +1,2 @@
-# dex8-skript
+# Skript Title
 > Skript description

@@ -1,1 +1,2 @@
-# basic
+# Skript Title
+> Skript description
